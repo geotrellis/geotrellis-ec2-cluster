@@ -1,0 +1,14 @@
+---
+- name: Configure Mesos leader hostname
+  copy: content={{ mesos_leader_hostname }}
+        dest={{ mesos_leader_conf_dir }}/hostname
+  notify:
+    - Restart Mesos leader
+    - Restart Marathon
+
+- name: Configure Mesos cluster name
+  copy: content={{ mesos_leader_cluster }}
+        dest={{ mesos_leader_conf_dir }}/cluster
+  notify:
+    - Restart Mesos leader
+    - Restart Marathon

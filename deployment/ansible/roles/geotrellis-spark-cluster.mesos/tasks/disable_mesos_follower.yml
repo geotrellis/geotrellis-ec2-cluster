@@ -1,0 +1,12 @@
+---
+- name: Check if Mesos follower service definition exists
+  stat: path=/etc/init/mesos-slave.conf
+  register: mesos_follower_service
+
+- name: Stop Mesos follower service
+  service: name=mesos-slave state=stopped
+  when: mesos_follower_service.stat.exists
+
+- name: Remove Mesos follower service
+  file: path=/etc/init/mesos-slave.conf state=absent
+  when: mesos_follower_service.stat.exists

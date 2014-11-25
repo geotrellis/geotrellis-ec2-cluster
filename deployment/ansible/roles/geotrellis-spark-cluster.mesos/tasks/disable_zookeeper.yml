@@ -1,0 +1,12 @@
+---
+- name: Check if Zookeeper service definition exists
+  stat: path=/etc/init.d/zookeeper-server.conf
+  register: zookeeper_service
+
+- name: Stop Zookeeper service
+  service: name=zookeeper-server state=stopped
+  when: zookeeper_service.stat.exists
+
+- name: Remove Zookeeper service
+  file: path=/etc/init.d/zookeeper-server.conf state=absent
+  when: zookeeper_service.stat.exists

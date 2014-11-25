@@ -1,0 +1,12 @@
+---
+- hosts: leaders
+  sudo: True
+
+  pre_tasks:
+    - name: Update APT cache
+      apt: update_cache=yes
+
+  roles:
+    - { role: "geotrellis-spark-cluster.common" }
+    - { role: "azavea.hdfs", hdfs_namenode: True }
+    - { role: "geotrellis-spark-cluster.mesos", mesos_leader: True }

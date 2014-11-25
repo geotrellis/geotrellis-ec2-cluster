@@ -1,0 +1,11 @@
+---
+zookeeper_servers:
+  - { index: "0", ip: "namenode.service.geotrellis-spark.internal", ports: "2888:3888" }
+
+mesos_leader_cluster: "geotrellis-mesos-cluster"
+mesos_leader_hostname: "mesos-leader.service.geotrellis-spark.internal"
+mesos_leader_quorum: 1
+
+hdfs_namenode_host: "namenode.service.geotrellis-spark.internal"
+hdfs_disks:
+  - { device: "/dev/sdb", mount_point: "/media/ephemeral0" }

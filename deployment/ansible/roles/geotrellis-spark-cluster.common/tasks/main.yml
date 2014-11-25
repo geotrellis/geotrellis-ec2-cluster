@@ -1,0 +1,13 @@
+---
+- name: Remove 127.0.1.1 from /etc/hosts
+  lineinfile: dest="/etc/hosts"
+              regexp="^127.0.1.1"
+              line=""
+
+- name: Increase ulimits
+  lineinfile: dest="/etc/security/limits.conf"
+              regexp="{{ item }} nofile"
+              line="* {{ item }} nofile 65536"
+  with_items:
+    - soft
+    - hard

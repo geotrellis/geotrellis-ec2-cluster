@@ -1,0 +1,5 @@
+---
+dependencies:
+  - { role: "azavea.zookeeper", when: mesos_leader }
+  - { role: "azavea.mesos" }
+  - { role: "azavea.marathon", when: mesos_leader }

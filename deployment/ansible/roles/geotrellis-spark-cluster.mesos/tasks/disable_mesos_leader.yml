@@ -1,0 +1,12 @@
+---
+- name: Check if Mesos leader service definition exists
+  stat: path=/etc/init/mesos-master.conf
+  register: mesos_leader_service
+
+- name: Stop Mesos leader service
+  service: name=mesos-master state=stopped
+  when: mesos_leader_service.stat.exists
+
+- name: Remove Mesos leader service
+  file: path=/etc/init/mesos-master.conf state=absent
+  when: mesos_leader_service.stat.exists

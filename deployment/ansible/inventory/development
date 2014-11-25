@@ -1,0 +1,14 @@
+leader ansible_ssh_host=33.33.33.10
+follower01 ansible_ssh_host=33.33.33.20
+follower02 ansible_ssh_host=33.33.33.30
+
+[leaders]
+leader
+
+[followers]
+follower01
+follower02
+
+[development:children]
+leaders
+followers

@@ -1,0 +1,21 @@
+---
+- name: Configure Mesos with Zookeeper endpoints
+  template: src=zk.j2 dest={{ mesos_conf_dir }}/zk
+  notify:
+    - Restart Mesos leader
+    - Restart Marathon
+    - Restart Mesos follower
+
+- name: Configure Mesos leader quorum
+  copy: content={{ mesos_leader_quorum }}
+        dest={{ mesos_leader_conf_dir }}/quorum
+  notify:
+    - Restart Mesos leader
+    - Restart Marathon
+    - Restart Mesos follower
+
+- { include: configure_mesos_leader.yml, when: mesos_leader }
+- { include: configure_mesos_follower.yml, when: mesos_follower }
+- { include: disable_mesos_leader.yml, when: mesos_follower }
+- { include: disable_zookeeper.yml, when: mesos_follower }
+- { include: disable_mesos_follower.yml, when: mesos_leader }
