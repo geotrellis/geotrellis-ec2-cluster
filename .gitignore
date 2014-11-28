@@ -1,4 +1,7 @@
 .vagrant
 
+*.pyc
+
+deployment/troposphere/*.json
 deployment/ansible/roles/*
 !deployment/ansible/roles/geotrellis-spark-cluster.*

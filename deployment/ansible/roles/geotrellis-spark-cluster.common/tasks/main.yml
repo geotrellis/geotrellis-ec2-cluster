@@ -3,6 +3,7 @@
   lineinfile: dest="/etc/hosts"
               regexp="^127.0.1.1"
               line=""
+  when: developing
 
 - name: Increase ulimits
   lineinfile: dest="/etc/security/limits.conf"

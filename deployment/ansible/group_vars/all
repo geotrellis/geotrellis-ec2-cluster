@@ -1,2 +1,18 @@
 ---
 mesos_follower: not mesos_leader
+developing: "'development' in group_names"
+packing: "'packer' in group_names"
+
+java_version: "7u71-2.5.3-0ubuntu0.14.04.1"
+spark_version: "1.1.0+cdh5.2.1+63-1.cdh5.2.1.p0.9~trusty-cdh5.2.1"
+hdfs_version: "2.5.0+cdh5.2.1+578-1.cdh5.2.1.p0.14~trusty-cdh5.2.1"
+zookeeper_version: "3.4.5+cdh5.2.1+84-1.cdh5.2.1.p0.13~trusty-cdh5.2.1"
+
+zookeeper_servers:
+  - { index: "0", ip: "zookeeper.service.geotrellis-spark.internal", ports: "2888:3888" }
+
+mesos_leader_cluster: "geotrellis-mesos-cluster"
+mesos_leader_hostname: "mesos-leader.service.geotrellis-spark.internal"
+mesos_leader_quorum: 1
+
+hdfs_namenode_host: "namenode.service.geotrellis-spark.internal"

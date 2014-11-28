@@ -6,7 +6,22 @@
     - name: Update APT cache
       apt: update_cache=yes
 
+    - name: Add leader hostnames to /etc/hosts
+      lineinfile: dest="/etc/hosts"
+                  regexp="^127.0.1.1"
+                  line="127.0.1.1 {{ leader_hostnames }}"
+      when: packing
+
   roles:
     - { role: "geotrellis-spark-cluster.common" }
     - { role: "azavea.hdfs", hdfs_namenode: True }
     - { role: "geotrellis-spark-cluster.mesos", mesos_leader: True }
+
+  post_tasks:
+    - meta: flush_handlers
+
+    - name: Remove 127.0.1.1 from /etc/hosts
+      lineinfile: dest="/etc/hosts"
+                  regexp="^127.0.1.1"
+                  line=""
+      when: packing

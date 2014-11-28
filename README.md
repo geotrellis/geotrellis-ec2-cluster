@@ -40,7 +40,7 @@ In order to speed up things up, you may want to consider using a local caching p
 $ VAGRANT_PROXYCONF_ENDPOINT="http://192.168.96.10:8123/" vagrant up
 ```
 
-## Testing
+### Testing
 
 Testing the Mesos/Spark integration consists of running a few tasks in the `spark-shell` from the Mesos leader.
 
@@ -75,3 +75,58 @@ scala> distData.filter(_< 10).collect()
 ```
 
 If all goes well, you should be able to see Spark distributing bits of the filter across the `follower*` virtual machines.
+
+## Deployment
+
+Deployment is driven by the [Amazon Web Services CLI](http://aws.amazon.com/cli/), but expects the following resources to exist in the target AWS account:
+
+- An EC2 key pair
+- Access keys to sign API requests
+- An IAM role for the cluster leaders and followers
+- An SNS topic for global notifications
+
+In order to get started, install the deployment dependencies:
+
+```bash
+$ pip install -r deployment/requirements.txt
+```
+
+Then, generate all of the CloudFormation templates:
+
+```bash
+$ cd deployment
+$ make
+```
+
+### Launch the AWS Virtual Private Cloud (VPC)
+
+From within the `deployment` directory, create the VPC CloudFormation stack:
+
+```
+$ make vpc-stack
+```
+
+### Create leader and follower AMIs
+
+Now that the VPC stacks is setup, we can begin working on the Mesos leaders and followers. First, we need to create their AMIs:
+
+```
+$ make leader-ami
+$ make follower-ami
+```
+
+### Launch the Mesos leader stack
+
+After both AMIs are created, create the Mesos leader stack:
+
+```
+$ make leader-stack
+```
+
+### Launch the Mesos follower stack
+
+After the leader stack is complete, create the Mesos follower stack:
+
+```
+$ make follower-stack
+```

@@ -1,0 +1,5 @@
+#cloud-config
+
+mounts:
+ - [ ephemeral0, null ]
+ - [ ephemeral0, "/media/ephemeral0" ]

@@ -1,0 +1,4 @@
+#cloud-config
+
+bootcmd:
+ - [ wget, "--quiet", "--output-document", "/etc/mesos-master/hostname", "http://169.254.169.254/latest/meta-data/public-hostname" ]

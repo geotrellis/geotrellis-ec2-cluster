@@ -1,0 +1,11 @@
+---
+ntp_servers:
+  - 0.amazon.pool.ntp.org
+  - 1.amazon.pool.ntp.org
+  - 2.amazon.pool.ntp.org
+  - 3.amazon.pool.ntp.org
+
+hdfs_disks:
+  - { device: "/dev/xvdb", mount_point: "/media/ephemeral0" }
+
+leader_hostnames: "{{ zookeeper_servers[0].ip }} {{ mesos_leader_hostname }} {{ hdfs_namenode_host }}"
