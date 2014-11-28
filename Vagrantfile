@@ -72,6 +72,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
   config.vm.define "leader" do |leader|
     leader.hostmanager.aliases = [
+      "zookeeper.service.geotrellis-spark.internal",
       "namenode.service.geotrellis-spark.internal",
       "mesos-leader.service.geotrellis-spark.internal"
     ]

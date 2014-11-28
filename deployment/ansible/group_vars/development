@@ -1,6 +1,6 @@
 ---
 zookeeper_servers:
-  - { index: "0", ip: "namenode.service.geotrellis-spark.internal", ports: "2888:3888" }
+  - { index: "0", ip: "zookeeper.service.geotrellis-spark.internal", ports: "2888:3888" }
 
 mesos_leader_cluster: "geotrellis-mesos-cluster"
 mesos_leader_hostname: "mesos-leader.service.geotrellis-spark.internal"

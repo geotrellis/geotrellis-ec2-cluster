@@ -54,7 +54,7 @@ From there, set the following environmental variables:
 
 ```bash
 vagrant@leader:~$ export MESOS_NATIVE_LIBRARY=/usr/local/lib/libmesos.so
-vagrant@leader:~$ export MASTER=mesos://zk://mesos-leader.service.geotrellis-spark.internal:2181/mesos
+vagrant@leader:~$ export MASTER=mesos://zk://zookeeper.service.geotrellis-spark.internal:2181/mesos
 vagrant@leader:~$ export SPARK_EXECUTOR_URI="http://d3kbcqa49mib13.cloudfront.net/spark-1.1.1-bin-cdh4.tgz"
 ```
 
