@@ -1,3 +1,4 @@
+azavea.ntp,0.1.0
 azavea.java,0.1.0
 azavea.zookeeper,0.2.0
 azavea.mesos,0.2.0
