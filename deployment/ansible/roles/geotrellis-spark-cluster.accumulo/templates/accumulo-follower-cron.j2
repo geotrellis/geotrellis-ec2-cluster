@@ -1,0 +1,15 @@
+#!/bin/bash
+
+set -e
+set -x
+
+if hdfs dfs -test -d /accumulo; then
+  # Accumulo has been initialized; remove service definition overrides
+  rm -f /etc/init/accumulo-tserver.override
+
+  # Start Accumulo services
+  /sbin/start accumulo-tserver
+
+  # Shoot self in head
+  rm /etc/cron.d/accumulo-follower
+fi

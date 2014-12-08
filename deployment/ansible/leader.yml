@@ -10,12 +10,14 @@
       lineinfile: dest="/etc/hosts"
                   regexp="^127.0.1.1"
                   line="127.0.1.1 {{ leader_hostnames }}"
+                  state=present
       when: packing
 
   roles:
     - { role: "geotrellis-spark-cluster.common" }
     - { role: "azavea.hdfs", hdfs_namenode: True }
     - { role: "geotrellis-spark-cluster.mesos", mesos_leader: True }
+    - { role: "geotrellis-spark-cluster.accumulo", accumulo_leader: True }
 
   post_tasks:
     - meta: flush_handlers
@@ -24,4 +26,5 @@
       lineinfile: dest="/etc/hosts"
                   regexp="^127.0.1.1"
                   line=""
+                  state=absent
       when: packing

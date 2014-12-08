@@ -1,0 +1,40 @@
+---
+- name: Add Accumulo user to HDFS supergroup
+  user: name=accumulo
+        append=yes
+        group=hadoop
+        state=present
+
+- name: Create service definition overrides
+  copy: content="manual"
+        dest=/etc/init/accumulo-{{ item }}.override
+        mode=0644
+  with_items:
+    - gc
+    - master
+    - monitor
+    - tracer
+    - tserver
+
+- name: Configure Accumulo
+  template: src={{ item }}.j2
+            dest={{ accumulo_conf_dir }}/{{ item }}
+            owner=accumulo
+            group=root
+            mode=0644
+  with_items:
+    - accumulo-env.sh
+    - accumulo-metrics.xml
+    - accumulo-site.xml
+    - generic_logger.xml
+    - log4j.properties
+    - monitor_logger.xml
+
+- name: Set master for Accumulo followers
+  copy: content="{{ accumulo_leader_host }}"
+        dest="{{ accumulo_conf_dir }}/masters"
+        mode=0644
+
+- { include: configure_accumulo_leader.yml, when: accumulo_leader }
+- { include: configure_accumulo_follower.yml, when: accumulo_follower }
+

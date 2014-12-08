@@ -1,0 +1,3 @@
+---
+- name: Update sysctl
+  command: sysctl -e -p /etc/sysctl.d/10-swappiness.conf

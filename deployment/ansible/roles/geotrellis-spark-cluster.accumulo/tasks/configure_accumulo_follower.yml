@@ -1,0 +1,15 @@
+---
+- name: Create cron script to initialize Accumulo follower
+  template: src=accumulo-follower-cron.j2
+            dest=/usr/local/bin/accumulo-follower-cron
+            owner=root
+            group=root
+            mode=0755
+
+- name: Create cron job to initialize Accumulo follower
+  cron: name="accumulo-follower"
+        minute="*/1"
+        user="root"
+        job="/usr/local/bin/accumulo-follower-cron >> /var/log/accumulo-follower-cron.log 2>&1"
+        cron_file="accumulo-follower"
+        state=present

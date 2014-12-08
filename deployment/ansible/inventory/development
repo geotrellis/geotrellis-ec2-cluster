@@ -1,6 +1,6 @@
-leader ansible_ssh_host=33.33.33.10
-follower01 ansible_ssh_host=33.33.33.20
-follower02 ansible_ssh_host=33.33.33.30
+leader ansible_ssh_host=33.33.33.10 ansible_ssh_user=vagrant
+follower01 ansible_ssh_host=33.33.33.20 ansible_ssh_user=vagrant
+follower02 ansible_ssh_host=33.33.33.30 ansible_ssh_user=vagrant
 
 [leaders]
 leader

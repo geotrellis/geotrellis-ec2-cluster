@@ -1,0 +1,29 @@
+#!/bin/bash
+
+set -e
+set -x
+
+if sudo -E -u hdfs hdfs dfsadmin -report -live | egrep "Live datanodes \([^0][0-9]?\)"; then
+  # Live datanodes exist; has Accumulo been initialized?
+  if ! hdfs dfs -test -d /accumulo; then
+    sudo -E -u accumulo accumulo init \
+      --instance-name {{ accumulo_secret }} \
+      --password {{ accumulo_secret }}
+
+    # Remove service definition overrides
+    rm -f \
+      /etc/init/accumulo-gc.override \
+      /etc/init/accumulo-master.override \
+      /etc/init/accumulo-monitor.override \
+      /etc/init/accumulo-tracer.override
+
+    # Start Accumulo services
+    /sbin/start accumulo-master
+    /sbin/start accumulo-monitor
+    /sbin/start accumulo-gc
+    /sbin/start accumulo-tracer
+
+    # Shoot self in head
+    rm /etc/cron.d/accumulo-leader
+  fi
+fi

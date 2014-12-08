@@ -1,0 +1,14 @@
+---
+- name: Add Vagrant user to HDFS supergroup
+  user: name=vagrant
+        append=yes
+        group=hadoop
+        state=present
+  when: developing
+
+- name: Add Ubuntu user to HDFS supergroup
+  user: name=ubuntu
+        append=yes
+        group=hadoop
+        state=present
+  when: packing

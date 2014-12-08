@@ -1,12 +1,15 @@
 ---
 mesos_follower: not mesos_leader
+accumulo_follower: not accumulo_leader
 developing: "'development' in group_names"
 packing: "'packer' in group_names"
 
 java_version: "7u71-2.5.3-0ubuntu0.14.04.1"
-spark_version: "1.1.0+cdh5.2.1+63-1.cdh5.2.1.p0.9~trusty-cdh5.2.1"
-hdfs_version: "2.5.0+cdh5.2.1+578-1.cdh5.2.1.p0.14~trusty-cdh5.2.1"
-zookeeper_version: "3.4.5+cdh5.2.1+84-1.cdh5.2.1.p0.13~trusty-cdh5.2.1"
+spark_version: "1.2.0+cdh5.3.0+364-1.cdh5.3.0.p0.36~trusty-cdh5.3.0"
+hdfs_version: "2.5.0+cdh5.3.0+781-1.cdh5.3.0.p0.54~trusty-cdh5.3.0"
+zookeeper_version: "3.4.5+cdh5.3.0+81-1.cdh5.3.0.p0.36~trusty-cdh5.3.0"
+mesos_version: "0.21.1-1.1.ubuntu1404"
+marathon_version: "0.7.6-1.0"
 
 zookeeper_servers:
   - { index: "0", ip: "zookeeper.service.geotrellis-spark.internal", ports: "2888:3888" }
@@ -16,3 +19,16 @@ mesos_leader_hostname: "mesos-leader.service.geotrellis-spark.internal"
 mesos_leader_quorum: 1
 
 hdfs_namenode_host: "namenode.service.geotrellis-spark.internal"
+hdfs_core_properties:
+  - { name: "fs.defaultFS", value: "hdfs://{{ hdfs_namenode_host }}:{{ hdfs_namenode_port }}" }
+hdfs_namenode_properties:
+  - { name: "dfs.permissions.superusergroup", value: "hadoop" }
+  - { name: "dfs.namenode.name.dir", value: "/media/persistent0" }
+hdfs_datanode_properties:
+  - { name: "dfs.permissions.superusergroup", value: "hadoop" }
+  - { name: "dfs.datanode.data.dir", value: "{{ hdfs_disks | map(attribute='mount_point') | join(',') }}" }
+  - { name: "dfs.datanode.synconclose", value: "true" }
+
+accumulo_leader_host: "accumulo-leader.service.geotrellis-spark.internal"
+accumulo_instance_name: "geotrellis-accumulo-cluster"
+accumulo_secret: "secret"

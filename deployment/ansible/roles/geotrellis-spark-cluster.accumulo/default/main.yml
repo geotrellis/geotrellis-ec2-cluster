@@ -1,0 +1,3 @@
+---
+accumulo_instance_name: "default"
+accumulo_secret: "DEFAULT"

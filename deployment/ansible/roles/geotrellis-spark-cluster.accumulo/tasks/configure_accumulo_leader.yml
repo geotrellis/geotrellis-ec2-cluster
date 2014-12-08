@@ -1,0 +1,15 @@
+---
+- name: Create cron script to initialize Accumulo leader
+  template: src=accumulo-leader-cron.j2
+            dest=/usr/local/bin/accumulo-leader-cron
+            owner=root
+            group=root
+            mode=0755
+
+- name: Create cron job to initialize Accumulo leader
+  cron: name="accumulo-leader"
+        minute="*/1"
+        user="root"
+        job="/usr/local/bin/accumulo-leader-cron >> /var/log/accumulo-leader-cron.log 2>&1"
+        cron_file="accumulo-leader"
+        state=present

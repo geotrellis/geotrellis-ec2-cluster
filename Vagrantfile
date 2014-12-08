@@ -39,7 +39,7 @@ def install_dependent_roles
 end
 
 # Install missing role dependencies based on the contents of roles.txt
-if [ "up", "provision" ].include?(ARGV.first)
+if [ "up", "provision", "status" ].include?(ARGV.first)
   install_dependent_roles
 end
 
@@ -70,11 +70,17 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     exit(1)
   end
 
+  if Vagrant.has_plugin?("vagrant-cachier") &&
+    VAGRANT_PROXYCONF_ENDPOINT.nil?
+    config.cache.scope = :box
+  end
+
   config.vm.define "leader" do |leader|
     leader.hostmanager.aliases = [
       "zookeeper.service.geotrellis-spark.internal",
       "namenode.service.geotrellis-spark.internal",
-      "mesos-leader.service.geotrellis-spark.internal"
+      "mesos-leader.service.geotrellis-spark.internal",
+      "accumulo-leader.service.geotrellis-spark.internal"
     ]
 
     leader.vm.hostname = "leader"
@@ -88,6 +94,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     leader.vm.network "forwarded_port", guest: 8080, host: 8080
     # HDFS console
     leader.vm.network "forwarded_port", guest: 50070, host: 50070
+    # Accumulo console
+    leader.vm.network "forwarded_port", guest: 50095, host: 50095
 
     leader.vm.provider "virtualbox" do |v|
       v.memory = 3072
