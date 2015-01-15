@@ -1,4 +1,4 @@
-from troposphere import Template, Parameter, Ref, Base64, ec2
+from troposphere import Template, Parameter, Ref, Base64, Tags, ec2
 
 import template_utils as utils
 import troposphere.autoscaling as asg
@@ -37,8 +37,7 @@ mesos_follower_ami_param = t.add_parameter(Parameter(
 
 mesos_follower_instance_profile_param = t.add_parameter(Parameter(
     'MesosFollowerInstanceProfile', Type='String',
-    Default=
-    'arn:aws:iam::784347171332:instance-profile/MesosFollowerInstanceProfile',
+    Default='MesosFollowerInstanceProfile',
     Description='Physical resource ID of an AWS::IAM::Role for the followers'
 ))
 
@@ -50,9 +49,11 @@ mesos_follower_subnet_param = t.add_parameter(Parameter(
 #
 # Security Group Resources
 #
-mesos_follower_security_group = utils.create_security_group(
-    t, 'sgMesosFollower', 'Enables access to the MesosFollower', vpc_param,
-    ingress=[
+mesos_follower_security_group = t.add_resource(ec2.SecurityGroup(
+    'sgMesosFollower',
+    GroupDescription='Enables access to the MesosFollower',
+    VpcId=Ref(vpc_param),
+    SecurityGroupIngress=[
         ec2.SecurityGroupRule(IpProtocol='tcp', CidrIp=Ref(office_cidr_param),
                               FromPort=p, ToPort=p)
         for p in [22, 5050, 5051]
@@ -61,7 +62,7 @@ mesos_follower_security_group = utils.create_security_group(
             IpProtocol='tcp', CidrIp=utils.VPC_CIDR, FromPort=0, ToPort=65535
         )
     ],
-    egress=[
+    SecurityGroupEgress=[
         ec2.SecurityGroupRule(
             IpProtocol='tcp', CidrIp=utils.VPC_CIDR, FromPort=0, ToPort=65535
         )
@@ -69,8 +70,9 @@ mesos_follower_security_group = utils.create_security_group(
         ec2.SecurityGroupRule(IpProtocol='tcp', CidrIp=utils.ALLOW_ALL_CIDR,
                               FromPort=p, ToPort=p)
         for p in [80, 443]
-    ]
-)
+    ],
+    Tags=Tags(Name='sgMesosFollower')
+))
 
 #
 # Resources
@@ -80,16 +82,19 @@ mesos_follower_launch_config = t.add_resource(asg.LaunchConfiguration(
     AssociatePublicIpAddress=True,
     BlockDeviceMappings=[
         {
-            "DeviceName": "/dev/sdb",
+            "DeviceName": "/dev/xvdb",
             "VirtualName": "ephemeral0"
+        },
+        {
+            "DeviceName": "/dev/xvdc",
+            "VirtualName": "ephemeral1"
         }
     ],
     ImageId=Ref(mesos_follower_ami_param),
     IamInstanceProfile=Ref(mesos_follower_instance_profile_param),
-    InstanceType='m3.medium',
+    InstanceType='i2.2xlarge',
     KeyName=Ref(keyname_param),
     SecurityGroups=[Ref(mesos_follower_security_group)],
-    SpotPrice='0.452',
     UserData=Base64(utils.read_file('cloud-config/follower.yml'))
 ))
 
@@ -112,7 +117,6 @@ mesos_follower_auto_scaling_group = t.add_resource(asg.AutoScalingGroup(
             asg.EC2_INSTANCE_TERMINATE_ERROR
         ]
     ),
-    # TODO: Add PlacementGroup
     VPCZoneIdentifier=Ref(mesos_follower_subnet_param),
     Tags=[asg.Tag('Name', 'MesosFollower', True)]
 ))

@@ -2,6 +2,10 @@
 
 set -e
 
+if env | grep -q "GEOTRELLIS_SPARK_DEPLOY_DEBUG"; then
+  set -x
+fi
+
 export AWS_DEFAULT_REGION="us-east-1"
 export AWS_DEFAULT_OUTPUT="text"
 export AWS_KEY_NAME="geotrellis-spark-test"
@@ -16,7 +20,7 @@ function get_latest_ubuntu_ami() {
   # 5. Take the top row
   # 6. Take the 8th column
   curl -s "http://cloud-images.ubuntu.com/query/trusty/server/daily.txt" \
-    | grep "ebs\tamd64\t${AWS_DEFAULT_REGION}" \
+    | egrep "ebs\s+amd64\s+${AWS_DEFAULT_REGION}" \
     | grep "hvm" \
     | sort -k4 -r \
     | head -n1 \
@@ -24,9 +28,32 @@ function get_latest_ubuntu_ami() {
 }
 
 function get_stack_outputs() {
-  aws cloudformation describe-stacks --profile geotrellis-spark-test \
+  aws cloudformation describe-stacks \
+    --profile geotrellis-spark-test \
     --stack-name "${1}" \
-    --output text --query "Stacks[*].Outputs[*].[OutputKey, OutputValue]"
+    --query "Stacks[*].Outputs[*].[OutputKey, OutputValue]"
+}
+
+function wait_for_stack() {
+  local n=0
+
+  until [ $n -ge 15 ]  # 15 * 60 = 900 = 15 minutes
+  do
+    echo "Waiting for stack..."
+
+    aws cloudformation describe-stacks \
+      --profile geotrellis-spark-test \
+      --stack-name "${1}" \
+      | cut -f"7,8" \
+      | egrep -q "(CREATE|UPDATE|ROLLBACK)_COMPLETE" && break
+
+    n=$[$n+1]
+    sleep 60
+  done
+
+  aws cloudformation describe-stacks \
+    --profile geotrellis-spark-test \
+    --stack-name "${1}"
 }
 
 function get_latest_internal_ami() {
@@ -36,12 +63,14 @@ function get_latest_internal_ami() {
   # 4. Sort by AMI name (contains a date created timestamp)
   # 5. Take the top row
   # 6. Take the 4th column
-  aws ec2 describe-images --owners self \
+  aws ec2 describe-images \
+    --profile geotrellis-spark-test \
+    --owners self \
     | grep "${1}" \
     | grep IMAGES \
     | sort -k5 -r \
     | head -n1 \
-    | cut -f4
+    | cut -f5
 }
 
 function create_ami() {
@@ -49,12 +78,9 @@ function create_ami() {
   AWS_VPC_STACK_OUTPUTS=$(get_stack_outputs "GeoTrellisSparkVPC")
 
   # Build an AMI for the application servers
-  # TODO: Remove --debug
-  packer build --debug \
+  packer build \
     -only="${1}" \
     -var "aws_ubuntu_ami=$(get_latest_ubuntu_ami)" \
-    -var "aws_vpc_id=$(echo "${AWS_VPC_STACK_OUTPUTS}" | grep "VpcId" | cut -f2)" \
-    -var "aws_subnet=$(echo "${AWS_VPC_STACK_OUTPUTS}" | grep "MesosSubnet" | cut -f2)" \
     packer/template.js
 }
 
@@ -62,9 +88,26 @@ case "$1" in
 
   create-vpc-stack)
     # Create VPC stack
-    aws cloudformation create-stack --profile geotrellis-spark-test \
+    aws cloudformation create-stack
+      --profile geotrellis-spark-test \
       --stack-name "GeoTrellisSparkVPC" \
       --template-body "file://troposphere/vpc_template.json"
+
+    wait_for_stack "GeoTrellisSparkVPC"
+    ;;
+
+
+  create-private-hosted-zones)
+    # Get CloudFormation VPC stack outputs
+    AWS_VPC_STACK_OUTPUTS=$(get_stack_outputs "GeoTrellisSparkVPC")
+
+    # Create private DNS hosted zone
+    aws route53 create-hosted-zone \
+      --profile geotrellis-spark-test \
+      --name geotrellis-spark.internal \
+      --caller-reference "create-hosted-zone-$(date +"%Y-%m-%d-%H:%M")" \
+      --vpc "VPCRegion=${AWS_DEFAULT_REGION},VPCId=$(echo "${AWS_VPC_STACK_OUTPUTS}" | grep "VpcId" | cut -f2)" \
+      --hosted-zone-config "Comment=create-hosted-zone"
     ;;
 
 
@@ -82,10 +125,13 @@ case "$1" in
     AWS_STACK_PARAMS="${AWS_STACK_PARAMS} ParameterKey=MesosLeaderAMI,ParameterValue=${MESOS_LEADER_AMI}"
     AWS_STACK_PARAMS="${AWS_STACK_PARAMS} ParameterKey=MesosLeaderSubnet,ParameterValue=${AWS_MESOS_SUBNET}"
 
-    aws cloudformation create-stack --profile geotrellis-spark-test \
+    aws cloudformation create-stack \
+      --profile geotrellis-spark-test \
       --stack-name "GeoTrellisSparkMesosLeaders" \
       --template-body "file://troposphere/leader_template.json" \
       --parameters ${AWS_STACK_PARAMS}
+
+    wait_for_stack "GeoTrellisSparkMesosLeaders"
     ;;
 
 
@@ -105,10 +151,13 @@ case "$1" in
     AWS_STACK_PARAMS="${AWS_STACK_PARAMS} ParameterKey=MesosFollowerSubnet,ParameterValue=${AWS_MESOS_SUBNET}"
 
     # Create cluster follower server stack
-    aws cloudformation create-stack --profile geotrellis-spark-test \
+    aws cloudformation create-stack \
+      --profile geotrellis-spark-test \
       --stack-name "GeoTrellisSparkMesosFollowers" \
       --template-body "file://troposphere/follower_template.json" \
       --parameters ${AWS_STACK_PARAMS}
+
+    wait_for_stack "GeoTrellisSparkMesosFollowers"
     ;;
 
 
@@ -128,6 +177,7 @@ case "$1" in
     echo "  Commands:"
     echo ""
     echo "    - create-vpc-stack"
+    echo "    - create-private-hosted-zones"
     echo "    - create-leader-stack"
     echo "    - create-follower-stack"
     echo "    - create-leader-ami"

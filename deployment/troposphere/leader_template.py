@@ -31,6 +31,12 @@ mesos_leader_ami_param = t.add_parameter(Parameter(
     Description='Mesos leader AMI'
 ))
 
+mesos_leader_instance_profile_param = t.add_parameter(Parameter(
+    'MesosLeaderInstanceProfile', Type='String',
+    Default='MesosLeaderInstanceProfile',
+    Description='Physical resource ID of an AWS::IAM::Role for the leader'
+))
+
 mesos_leader_subnet_param = t.add_parameter(Parameter(
     'MesosLeaderSubnet', Type='CommaDelimitedList',
     Description='A list of subnets to associate with the Mesos leaders'
@@ -39,18 +45,20 @@ mesos_leader_subnet_param = t.add_parameter(Parameter(
 #
 # Security Group Resources
 #
-mesos_leader_security_group = utils.create_security_group(
-    t, 'sgMesosLeader', 'Enables access to the MesosLeader', vpc_param,
-    ingress=[
+mesos_leader_security_group = t.add_resource(ec2.SecurityGroup(
+    'sgMesosLeader',
+    GroupDescription='Enables access to the MesosLeader',
+    VpcId=Ref(vpc_param),
+    SecurityGroupIngress=[
         ec2.SecurityGroupRule(IpProtocol='tcp', CidrIp=Ref(office_cidr_param),
                               FromPort=p, ToPort=p)
-        for p in [22, 4040, 5050, 8080, 50070]
+        for p in [22, 4040, 5050, 8080, 50070, 50095]
     ] + [
         ec2.SecurityGroupRule(
             IpProtocol='tcp', CidrIp=utils.VPC_CIDR, FromPort=0, ToPort=65535
         )
     ],
-    egress=[
+    SecurityGroupEgress=[
         ec2.SecurityGroupRule(
             IpProtocol='tcp', CidrIp=utils.VPC_CIDR, FromPort=0, ToPort=65535
         )
@@ -58,8 +66,9 @@ mesos_leader_security_group = utils.create_security_group(
         ec2.SecurityGroupRule(IpProtocol='tcp', CidrIp=utils.ALLOW_ALL_CIDR,
                               FromPort=p, ToPort=p)
         for p in [80, 443]
-    ]
-)
+    ],
+    Tags=Tags(Name='sgMesosLeader')
+))
 
 #
 # EC2 Instance Resources
@@ -72,9 +81,10 @@ mesos_leader = t.add_resource(ec2.Instance(
             "Ebs": {"VolumeSize": "256"}
         }
     ],
-    InstanceType='t2.medium',
+    InstanceType='r3.large',
     KeyName=Ref(keyname_param),
     ImageId=Ref(mesos_leader_ami_param),
+    IamInstanceProfile=Ref(mesos_leader_instance_profile_param),
     NetworkInterfaces=[
         ec2.NetworkInterfaceProperty(
             Description='ENI for MesosLeader',
@@ -86,7 +96,6 @@ mesos_leader = t.add_resource(ec2.Instance(
         )
     ],
     UserData=Base64(utils.read_file('cloud-config/leader.yml')),
-    # TODO: Add PlacementGroupName
     Tags=Tags(Name='MesosLeader')
 ))
 
@@ -102,21 +111,28 @@ mesos_leader_private_dns = t.add_resource(r53.RecordSetGroup(
             Name='zookeeper.service.geotrellis-spark.internal.',
             Type='A',
             TTL='60',
-            ResourceRecords=[GetAtt(mesos_leader.title, 'PrivateIp')]
+            ResourceRecords=[GetAtt(mesos_leader, 'PrivateIp')]
         ),
         r53.RecordSet(
             'dnsMesosLeader',
             Name='mesos-leader.service.geotrellis-spark.internal.',
             Type='A',
             TTL='60',
-            ResourceRecords=[GetAtt(mesos_leader.title, 'PrivateIp')]
+            ResourceRecords=[GetAtt(mesos_leader, 'PrivateIp')]
         ),
         r53.RecordSet(
             'dnsNameNode',
             Name='namenode.service.geotrellis-spark.internal.',
             Type='A',
             TTL='60',
-            ResourceRecords=[GetAtt(mesos_leader.title, 'PrivateIp')]
+            ResourceRecords=[GetAtt(mesos_leader, 'PrivateIp')]
+        ),
+        r53.RecordSet(
+            'dnsAccumulo',
+            Name='accumulo-leader.service.geotrellis-spark.internal.',
+            Type='A',
+            TTL='60',
+            ResourceRecords=[GetAtt(mesos_leader, 'PrivateIp')]
         )
     ]
 ))

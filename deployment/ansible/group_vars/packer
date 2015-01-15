@@ -7,5 +7,6 @@ ntp_servers:
 
 hdfs_disks:
   - { device: "/dev/xvdb", mount_point: "/media/ephemeral0" }
+  - { device: "/dev/xvdc", mount_point: "/media/ephemeral1" }
 
-leader_hostnames: "{{ zookeeper_servers[0].ip }} {{ mesos_leader_hostname }} {{ hdfs_namenode_host }}"
+leader_hostnames: "{{ zookeeper_servers[0].ip }} {{ mesos_leader_hostname }} {{ hdfs_namenode_host }} {{ accumulo_leader_host }}"

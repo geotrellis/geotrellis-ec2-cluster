@@ -1,10 +1,29 @@
 #cloud-config
 
+fs_setup:
+   - label: ephemeral0,
+     filesystem: ext3
+     extra_opts: [ "-E", "nodiscard" ]
+     device: ephemeral0
+     partition: auto
+   - label: ephemeral1,
+     filesystem: ext3
+     extra_opts: [ "-E", "nodiscard" ]
+     device: ephemeral1
+     partition: auto
+
 mounts:
  - [ ephemeral0, null ]
- - [ ephemeral0, "/media/ephemeral0" ]
+ - [ ephemeral1, null ]
+ - [ ephemeral0, "/media/ephemeral0", "ext3", "defaults,nobootwait,discard", "0", "2" ]
+ - [ ephemeral1, "/media/ephemeral1", "ext3", "defaults,nobootwait,discard", "0", "2" ]
 
 bootcmd:
- - [ wget, "--quiet", "--output-document", "/etc/mesos-slave/hostname", "http://169.254.169.254/latest/meta-data/public-hostname" ]
+ - [ wget, "--quiet", "--output-document", "/etc/mesos-slave/hostname", "http://instance-data.ec2.internal/latest/meta-data/public-hostname" ]
+
+runcmd:
  - [ chown, hdfs, "/media/ephemeral0" ]
  - [ chgrp, hdfs, "/media/ephemeral0" ]
+ - [ chown, hdfs, "/media/ephemeral1" ]
+ - [ chgrp, hdfs, "/media/ephemeral1" ]
+ - [ service, hadoop-hdfs-datanode, restart ]

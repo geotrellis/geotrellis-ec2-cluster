@@ -9,13 +9,16 @@ build:
 clean:
 	@rm troposphere/*.json
 
-vpc-stack:
+vpc-stack: build
 	./deployment-helper.sh create-vpc-stack
 
-leader-stack:
+private-hosted-zones:
+	./deployment-helper.sh create-private-hosted-zones
+
+leader-stack: build
 	./deployment-helper.sh create-leader-stack
 
-follower-stack:
+follower-stack: build
 	./deployment-helper.sh create-follower-stack
 
 leader-ami:

@@ -22,15 +22,14 @@ $ vagrant up
 
 After provisioning is complete, you can view the Mesos web console by navigating to:
 
-```
-http://localhost:5050/
-```
+### Service UIs
 
-Likewise, the HDFS NameNode web console is available on:
-
-```
-http://localhost:50070/
-```
+Service                | Port  | URL
+---------------------- | ----- | ------------------------------------------------
+Mesos                  | 5050  | [http://localhost:5050](http://localhost:5050)
+Marathon               | 8080  | [http://localhost:8080](http://localhost:8080)
+HDFS                   | 50070 | [http://localhost:50070](http://localhost:50070)
+Accumulo               | 50095 | [http://localhost:50095](http://localhost:50095)
 
 ### Caching
 
@@ -39,6 +38,8 @@ In order to speed up things up, you may want to consider using a local caching p
 ```bash
 $ VAGRANT_PROXYCONF_ENDPOINT="http://192.168.96.10:8123/" vagrant up
 ```
+
+Alternatively, you can also install the [`vagrant-cachier`](https://github.com/fgrehm/vagrant-cachier) plugin.
 
 ### Testing
 
@@ -78,41 +79,57 @@ If all goes well, you should be able to see Spark distributing bits of the filte
 
 ## Deployment
 
-Deployment is driven by the [Amazon Web Services CLI](http://aws.amazon.com/cli/), but expects the following resources to exist in the target AWS account:
+Deployment is driven by [Packer](https://www.packer.io), [Troposphere](https://github.com/cloudtools/troposphere), and the [Amazon Web Services CLI](http://aws.amazon.com/cli/).
 
-- An EC2 key pair
-- Access keys to sign API requests
+- Access keys to sign API requests exported as `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
+- An SNS topic for global notifications exported as `AWS_SNS_TOPIC`
 - An IAM role for the cluster leaders and followers
-- An SNS topic for global notifications
 
-In order to get started, install the deployment dependencies:
+In addition, export the following environmental variables for the AWS CLI:
 
 ```bash
-$ pip install -r deployment/requirements.txt
+$ export AWS_DEFAULT_OUTPUT=text
+$ export AWS_DEFAULT_REGION=us-east-1
 ```
 
-Then, generate all of the CloudFormation templates:
+Lastly, install the AWS CLI, Boto, and Troposphere:
 
 ```bash
 $ cd deployment
-$ make
+$ pip install -r deployment/requirements.txt
 ```
 
-### Launch the AWS Virtual Private Cloud (VPC)
+### Amazon Machine Images (AMIs)
 
-From within the `deployment` directory, create the VPC CloudFormation stack:
+In order to generate AMIs for the leader and followers, use the following `make` targets:
+
+```bash
+$ make leader-ami
+$ make follower-ami
+```
+
+### CloudFormation (via Troposphere)
+
+After at least one AMI of each type exists, use the following command to generate all of the CloudFormation templates:
+
+```bash
+$ make build
+```
+
+#### Launch the AWS Virtual Private Cloud (VPC)
+
+Use the following command to create the VPC stack:
 
 ```
 $ make vpc-stack
 ```
 
-### Create leader and follower AMIs
+#### Create Route 53 Private Hosted Zones
 
-Now that the VPC stacks is setup, we can begin working on the Mesos leaders and followers. First, we need to create their AMIs:
+Next, create the internal to the VPC private hosted zones:
 
-```
-$ make leader-ami
-$ make follower-ami
+```bash
+$ make private-hosted-zones
 ```
 
 ### Launch the Mesos leader stack

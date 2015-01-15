@@ -1,13 +1,10 @@
 {
   "variables": {
     "aws_region": "us-east-1",
-    "aws_instance_type": "m3.medium",
     "aws_ssh_username": "ubuntu",
     "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
     "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
-    "aws_ubuntu_ami": "",
-    "aws_vpc_id": "",
-    "aws_subnet": ""
+    "aws_ubuntu_ami": ""
   },
   "builders": [
     {
@@ -17,14 +14,12 @@
       "secret_key": "{{user `aws_secret_key` }}",
       "region": "{{user `aws_region`}}",
       "source_ami": "{{user `aws_ubuntu_ami`}}",
-      "instance_type": "{{user `aws_instance_type`}}",
+      "instance_type": "r3.large",
       "ssh_username": "{{user `aws_ssh_username`}}",
       "ami_name": "mesos-leader-{{timestamp}}",
       "tags": {
         "name": "mesos-leader"
       },
-      "vpc_id": "{{user `aws_vpc_id`}}",
-      "subnet_id": "{{user `aws_subnet`}}",
       "associate_public_ip_address": true
     },
     {
@@ -34,21 +29,23 @@
       "secret_key": "{{user `aws_secret_key` }}",
       "region": "{{user `aws_region`}}",
       "source_ami": "{{user `aws_ubuntu_ami`}}",
-      "instance_type": "{{user `aws_instance_type`}}",
+      "instance_type": "i2.2xlarge",
       "ssh_username": "{{user `aws_ssh_username`}}",
       "ami_name": "mesos-follower-{{timestamp}}",
       "ami_block_device_mappings": [
         {
-          "device_name": "/dev/sdb",
+          "device_name": "/dev/xvdb",
           "virtual_name": "ephemeral0"
+        },
+        {
+          "device_name": "/dev/xvdc",
+          "virtual_name": "ephemeral1"
         }
       ],
       "user_data_file": "cloud-config/packer.yml",
       "tags": {
         "name": "mesos-follower"
       },
-      "vpc_id": "{{user `aws_vpc_id`}}",
-      "subnet_id": "{{user `aws_subnet`}}",
       "associate_public_ip_address": true
     }
   ],

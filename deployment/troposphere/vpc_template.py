@@ -32,19 +32,24 @@ gateway_attachment = t.add_resource(ec2.VPCGatewayAttachment(
     'VPCGatewayAttachment', VpcId=Ref(vpc), InternetGatewayId=Ref(gateway)
 ))
 
-public_route_table = utils.create_route_table(t, 'PublicRouteTable', vpc)
+public_route_table = t.add_resource(ec2.RouteTable(
+    'PublicRouteTable', VpcId=Ref(vpc), Tags=Tags(Name='PublicRouteTable')
+))
 
-utils.create_route(
-    t, 'PublicRoute', public_route_table, DependsOn=gateway_attachment.title,
-    GatewayId=Ref(gateway)
-)
+t.add_resource(ec2.Route(
+    'PublicRoute', RouteTableId=Ref(public_route_table),
+    DestinationCidrBlock=utils.ALLOW_ALL_CIDR,
+    DependsOn=gateway_attachment.title, GatewayId=Ref(gateway)
+))
 
 availability_zone = utils.EC2_AVAILABILITY_ZONES[0]
 
-public_subnet = utils.create_subnet(
-    t, 'USEast1%sPublicSubnet' % availability_zone.upper(), vpc,
-    '10.0.1.0/24', 'us-east-1%s' % availability_zone
-)
+public_subnet = t.add_resource(ec2.Subnet(
+    'USEast1%sPublicSubnet' % availability_zone.upper(), VpcId=Ref(vpc),
+    CidrBlock='10.0.1.0/24',
+    AvailabilityZone='us-east-1%s' % availability_zone,
+    Tags=Tags(Name='USEast1%sPublicSubnet' % availability_zone.upper())
+))
 
 t.add_resource(ec2.SubnetRouteTableAssociation(
     '%sPublicRouteTableAssociation' % public_subnet.title,
