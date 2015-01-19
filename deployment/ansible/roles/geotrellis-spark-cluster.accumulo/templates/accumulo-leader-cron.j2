@@ -6,7 +6,7 @@ set -x
 if sudo -E -u hdfs hdfs dfsadmin -report -live | egrep "Live datanodes \([^0][0-9]?\)"; then
   # Live datanodes exist
   sudo -E -u accumulo accumulo init \
-    --instance-name {{ accumulo_secret }} \
+    --instance-name {{ accumulo_instance_name }} \
     --password {{ accumulo_secret }}
 
   # Remove service definition overrides
