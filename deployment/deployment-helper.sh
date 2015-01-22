@@ -74,9 +74,6 @@ function get_latest_internal_ami() {
 }
 
 function create_ami() {
-  # Get CloudFormation VPC stack outputs
-  AWS_VPC_STACK_OUTPUTS=$(get_stack_outputs "GeoTrellisSparkVPC")
-
   # Build an AMI for the application servers
   packer build \
     -only="${1}" \
