@@ -11,3 +11,4 @@
     - { role: "geotrellis-spark-cluster.hdfs", hdfs_namenode: False }
     - { role: "geotrellis-spark-cluster.mesos", mesos_leader: False }
     - { role: "geotrellis-spark-cluster.accumulo", accumulo_leader: False }
+    - { role: "geotrellis-spark-cluster.cleanup" }
