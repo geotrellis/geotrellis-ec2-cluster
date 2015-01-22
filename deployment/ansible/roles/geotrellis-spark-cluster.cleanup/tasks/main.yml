@@ -1,0 +1,13 @@
+---
+- name: Get rid of joda-time
+  file: path={{ item }} state=absent
+  with_items:
+    - /usr/lib/hadoop/client/joda-time-1.6.jar
+    - /usr/lib/hadoop/client/joda-time.jar
+    - /usr/lib/hadoop-mapreduce/joda-time-1.6.jar
+    - /usr/lib/parquet/lib/joda-time-1.6.jar
+
+- name: Symlinks jets3t 0.9.0 into /usr/lib/hadoop/client
+  file: src=/usr/lib/hadoop/lib/jets3t-0.9.0.jar
+        dest=/usr/lib/hadoop/client/jets3t-0.9.0.jar
+        state=link
