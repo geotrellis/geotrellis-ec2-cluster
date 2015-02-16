@@ -56,94 +56,23 @@ From there, set the following environmental variables:
 ```bash
 vagrant@leader:~$ export MESOS_NATIVE_LIBRARY=/usr/local/lib/libmesos.so
 vagrant@leader:~$ export MASTER=mesos://zk://zookeeper.service.geotrellis-spark.internal:2181/mesos
-vagrant@leader:~$ export SPARK_EXECUTOR_URI="http://d3kbcqa49mib13.cloudfront.net/spark-1.1.1-bin-cdh4.tgz"
+vagrant@leader:~$ export SPARK_EXECUTOR_URI="http://d3kbcqa49mib13.cloudfront.net/spark-1.2.1-bin-cdh4.tgz"
 ```
 
-Next, download and extract the Spark 1.1.1 distribution for CDH4 locally:
+Next, download and extract the Spark 1.2.1 distribution for CDH4 locally:
 
 ```bash
 vagrant@leader:~$ wget $SPARK_EXECUTOR_URI
-vagrant@leader:~$ tar xzf spark-1.1.1-bin-cdh4.tgz
+vagrant@leader:~$ tar xzf spark-1.2.1-bin-cdh4.tgz
 ```
 
 From here we can launch the `spark-shell` and run the test program:
 
 ```bash
-vagrant@leader:~$ ./spark-1.1.1-bin-cdh4/bin/spark-shell
+vagrant@leader:~$ ./spark-1.2.1-bin-cdh4/bin/spark-shell
 scala> val data = 1 to 10000
 scala> val distData = sc.parallelize(data)
 scala> distData.filter(_< 10).collect()
 ```
 
 If all goes well, you should be able to see Spark distributing bits of the filter across the `follower*` virtual machines.
-
-## Deployment
-
-Deployment is driven by [Packer](https://www.packer.io), [Troposphere](https://github.com/cloudtools/troposphere), and the [Amazon Web Services CLI](http://aws.amazon.com/cli/).
-
-- Access keys to sign API requests exported as `AWS_ACCESS_KEY_ID` and `AWS_SECRET_ACCESS_KEY`
-- An SNS topic for global notifications exported as `AWS_SNS_TOPIC`
-- An IAM role for the cluster leaders and followers
-
-In addition, export the following environmental variables for the AWS CLI:
-
-```bash
-$ export AWS_DEFAULT_OUTPUT=text
-$ export AWS_DEFAULT_REGION=us-east-1
-```
-
-Lastly, install the AWS CLI, Boto, and Troposphere:
-
-```bash
-$ cd deployment
-$ pip install -r deployment/requirements.txt
-```
-
-### Amazon Machine Images (AMIs)
-
-In order to generate AMIs for the leader and followers, use the following `make` targets:
-
-```bash
-$ make leader-ami
-$ make follower-ami
-```
-
-### CloudFormation (via Troposphere)
-
-After at least one AMI of each type exists, use the following command to generate all of the CloudFormation templates:
-
-```bash
-$ make build
-```
-
-#### Launch the AWS Virtual Private Cloud (VPC)
-
-Use the following command to create the VPC stack:
-
-```
-$ make vpc-stack
-```
-
-#### Create Route 53 Private Hosted Zones
-
-Next, create the internal to the VPC private hosted zones:
-
-```bash
-$ make private-hosted-zones
-```
-
-### Launch the Mesos leader stack
-
-After both AMIs are created, create the Mesos leader stack:
-
-```
-$ make leader-stack
-```
-
-### Launch the Mesos follower stack
-
-After the leader stack is complete, create the Mesos follower stack:
-
-```
-$ make follower-stack
-```

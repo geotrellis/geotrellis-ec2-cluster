@@ -88,6 +88,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
 
     leader.vm.synced_folder ".", "/vagrant", disabled: true
 
+    # Spark console
+    leader.vm.network "forwarded_port", guest: 4040, host: 4040
     # Mesos console
     leader.vm.network "forwarded_port", guest: 5050, host: 5050
     # Marathon console

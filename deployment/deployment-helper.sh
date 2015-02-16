@@ -6,11 +6,6 @@ if env | grep -q "GEOTRELLIS_SPARK_DEPLOY_DEBUG"; then
   set -x
 fi
 
-export AWS_DEFAULT_REGION="us-east-1"
-export AWS_DEFAULT_OUTPUT="text"
-export AWS_KEY_NAME="geotrellis-spark-test"
-export AWS_SNS_TOPIC="arn:aws:sns:us-east-1:784347171332:topicGlobalNotifications"
-
 function get_latest_ubuntu_ami() {
   # 1. Get list of daily Ubuntu AMIs
   # 2. Filter AMIs with EBS instance store, amd64 architecture, and in
@@ -29,7 +24,6 @@ function get_latest_ubuntu_ami() {
 
 function get_stack_outputs() {
   aws cloudformation describe-stacks \
-    --profile geotrellis-spark-test \
     --stack-name "${1}" \
     --query "Stacks[*].Outputs[*].[OutputKey, OutputValue]"
 }
@@ -42,7 +36,6 @@ function wait_for_stack() {
     echo "Waiting for stack..."
 
     aws cloudformation describe-stacks \
-      --profile geotrellis-spark-test \
       --stack-name "${1}" \
       | cut -f"7,8" \
       | egrep -q "(CREATE|UPDATE|ROLLBACK)_COMPLETE" && break
@@ -52,7 +45,6 @@ function wait_for_stack() {
   done
 
   aws cloudformation describe-stacks \
-    --profile geotrellis-spark-test \
     --stack-name "${1}"
 }
 
@@ -64,7 +56,6 @@ function get_latest_internal_ami() {
   # 5. Take the top row
   # 6. Take the 4th column
   aws ec2 describe-images \
-    --profile geotrellis-spark-test \
     --owners self \
     | grep "${1}" \
     | grep IMAGES \
@@ -86,7 +77,6 @@ case "$1" in
   create-vpc-stack)
     # Create VPC stack
     aws cloudformation create-stack
-      --profile geotrellis-spark-test \
       --stack-name "GeoTrellisSparkVPC" \
       --template-body "file://troposphere/vpc_template.json"
 
@@ -100,7 +90,6 @@ case "$1" in
 
     # Create private DNS hosted zone
     aws route53 create-hosted-zone \
-      --profile geotrellis-spark-test \
       --name geotrellis-spark.internal \
       --caller-reference "create-hosted-zone-$(date +"%Y-%m-%d-%H:%M")" \
       --vpc "VPCRegion=${AWS_DEFAULT_REGION},VPCId=$(echo "${AWS_VPC_STACK_OUTPUTS}" | grep "VpcId" | cut -f2)" \
@@ -123,7 +112,6 @@ case "$1" in
     AWS_STACK_PARAMS="${AWS_STACK_PARAMS} ParameterKey=MesosLeaderSubnet,ParameterValue=${AWS_MESOS_SUBNET}"
 
     aws cloudformation create-stack \
-      --profile geotrellis-spark-test \
       --stack-name "GeoTrellisSparkMesosLeaders" \
       --template-body "file://troposphere/leader_template.json" \
       --parameters ${AWS_STACK_PARAMS}
@@ -149,7 +137,6 @@ case "$1" in
 
     # Create cluster follower server stack
     aws cloudformation create-stack \
-      --profile geotrellis-spark-test \
       --stack-name "GeoTrellisSparkMesosFollowers" \
       --template-body "file://troposphere/follower_template.json" \
       --parameters ${AWS_STACK_PARAMS}
