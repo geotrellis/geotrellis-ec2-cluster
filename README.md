@@ -56,20 +56,20 @@ From there, set the following environmental variables:
 ```bash
 vagrant@leader:~$ export MESOS_NATIVE_LIBRARY=/usr/local/lib/libmesos.so
 vagrant@leader:~$ export MASTER=mesos://zk://zookeeper.service.geotrellis-spark.internal:2181/mesos
-vagrant@leader:~$ export SPARK_EXECUTOR_URI="http://d3kbcqa49mib13.cloudfront.net/spark-1.1.1-bin-cdh4.tgz"
+vagrant@leader:~$ export SPARK_EXECUTOR_URI="http://d3kbcqa49mib13.cloudfront.net/spark-1.2.1-bin-cdh4.tgz"
 ```
 
-Next, download and extract the Spark 1.1.1 distribution for CDH4 locally:
+Next, download and extract the Spark 1.2.1 distribution for CDH4 locally:
 
 ```bash
 vagrant@leader:~$ wget $SPARK_EXECUTOR_URI
-vagrant@leader:~$ tar xzf spark-1.1.1-bin-cdh4.tgz
+vagrant@leader:~$ tar xzf spark-1.2.1-bin-cdh4.tgz
 ```
 
 From here we can launch the `spark-shell` and run the test program:
 
 ```bash
-vagrant@leader:~$ ./spark-1.1.1-bin-cdh4/bin/spark-shell
+vagrant@leader:~$ ./spark-1.2.1-bin-cdh4/bin/spark-shell
 scala> val data = 1 to 10000
 scala> val distData = sc.parallelize(data)
 scala> distData.filter(_< 10).collect()
