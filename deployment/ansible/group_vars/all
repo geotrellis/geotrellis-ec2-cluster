@@ -4,12 +4,10 @@ accumulo_follower: not accumulo_leader
 developing: "'development' in group_names"
 packing: "'packer' in group_names"
 
-java_version: "7u71-2.5.3-0ubuntu0.14.04.1"
-spark_version: "1.2.0+cdh5.3.0+364-1.cdh5.3.0.p0.36~trusty-cdh5.3.0"
-hdfs_version: "2.5.0+cdh5.3.0+781-1.cdh5.3.0.p0.54~trusty-cdh5.3.0"
-zookeeper_version: "3.4.5+cdh5.3.0+81-1.cdh5.3.0.p0.36~trusty-cdh5.3.0"
-mesos_version: "0.21.1-1.1.ubuntu1404"
-marathon_version: "0.7.6-1.0"
+java_version: "7u51-2.4.*"
+spark_version: "1.2.0+cdh5.3.*"
+mesos_version: "0.21.*"
+marathon_version: "0.7.*"
 
 zookeeper_servers:
   - { index: "0", ip: "zookeeper.service.geotrellis-spark.internal", ports: "2888:3888" }
