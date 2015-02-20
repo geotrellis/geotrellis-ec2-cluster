@@ -18,9 +18,6 @@ mounts:
  - [ ephemeral0, "/media/ephemeral0", "ext3", "defaults,nobootwait,discard", "0", "2" ]
  - [ ephemeral1, "/media/ephemeral1", "ext3", "defaults,nobootwait,discard", "0", "2" ]
 
-bootcmd:
- - [ wget, "--quiet", "--output-document", "/etc/mesos-slave/hostname", "http://instance-data.ec2.internal/latest/meta-data/public-hostname" ]
-
 runcmd:
  - [ chown, hdfs, "/media/ephemeral0" ]
  - [ chgrp, hdfs, "/media/ephemeral0" ]
