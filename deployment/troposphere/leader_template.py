@@ -16,6 +16,11 @@ vpc_param = t.add_parameter(Parameter(
     'VpcId', Type='String', Description='Name of an existing VPC'
 ))
 
+private_hosted_zone_id_param = t.add_parameter(Parameter(
+    'PrivateHostedZoneId', Type='String',
+    Description='Hosted zone ID for private record set'
+))
+
 keyname_param = t.add_parameter(Parameter(
     'KeyName', Type='String', Default='geotrellis-spark-test',
     Description='Name of an existing EC2 key pair'
@@ -104,7 +109,7 @@ mesos_leader = t.add_resource(ec2.Instance(
 #
 mesos_leader_private_dns = t.add_resource(r53.RecordSetGroup(
     'dnsPrivateRecords',
-    HostedZoneName='geotrellis-spark.internal.',
+    HostedZoneId=Ref(private_hosted_zone_id_param),
     RecordSets=[
         r53.RecordSet(
             'dnsZookeeper',

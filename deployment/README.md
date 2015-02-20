@@ -11,7 +11,9 @@ $ export AWS_DEFAULT_PROFILE=geotrellis-spark-test
 $ export AWS_PROFILE=geotrellis-spark-test
 $ export AWS_DEFAULT_OUTPUT=text
 $ export AWS_DEFAULT_REGION=us-east-1
+$ export AWS_KEY_NAME=geotrellis-spark-test
 $ export AWS_SNS_TOPIC=arn:aws:sns:us-east-1...
+$ export GEOTRELLIS_SPARK_CLUSTER_NAME=Joker
 ```
 
 Lastly, install the AWS CLI, Boto, and Troposphere:

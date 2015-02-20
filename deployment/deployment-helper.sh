@@ -76,53 +76,57 @@ case "$1" in
 
   create-vpc-stack)
     # Create VPC stack
-    aws cloudformation create-stack
-      --stack-name "GeoTrellisSparkVPC" \
+    aws cloudformation create-stack \
+      --stack-name "${GEOTRELLIS_SPARK_CLUSTER_NAME}GeoTrellisSparkVPC" \
       --template-body "file://troposphere/vpc_template.json"
 
-    wait_for_stack "GeoTrellisSparkVPC"
+    wait_for_stack "${GEOTRELLIS_SPARK_CLUSTER_NAME}GeoTrellisSparkVPC"
     ;;
 
 
   create-private-hosted-zones)
     # Get CloudFormation VPC stack outputs
-    AWS_VPC_STACK_OUTPUTS=$(get_stack_outputs "GeoTrellisSparkVPC")
+    AWS_VPC_STACK_OUTPUTS=$(get_stack_outputs "${GEOTRELLIS_SPARK_CLUSTER_NAME}GeoTrellisSparkVPC")
+
+    AWS_VPC_ID=$(echo "${AWS_VPC_STACK_OUTPUTS}" | grep "VpcId" | cut -f2)
 
     # Create private DNS hosted zone
     aws route53 create-hosted-zone \
       --name geotrellis-spark.internal \
       --caller-reference "create-hosted-zone-$(date +"%Y-%m-%d-%H:%M")" \
-      --vpc "VPCRegion=${AWS_DEFAULT_REGION},VPCId=$(echo "${AWS_VPC_STACK_OUTPUTS}" | grep "VpcId" | cut -f2)" \
-      --hosted-zone-config "Comment=create-hosted-zone"
+      --vpc "VPCRegion=${AWS_DEFAULT_REGION},VPCId=${AWS_VPC_ID}" \
+      --hosted-zone-config "Comment=VpcId=${AWS_VPC_ID}"
     ;;
 
 
   create-leader-stack)
     # Get CloudFormation VPC stack outputs
-    AWS_VPC_STACK_OUTPUTS=$(get_stack_outputs "GeoTrellisSparkVPC")
+    AWS_VPC_STACK_OUTPUTS=$(get_stack_outputs "${GEOTRELLIS_SPARK_CLUSTER_NAME}GeoTrellisSparkVPC")
 
     AWS_VPC_ID=$(echo "${AWS_VPC_STACK_OUTPUTS}" | grep "VpcId" | cut -f2)
     AWS_MESOS_SUBNET=$(echo "${AWS_VPC_STACK_OUTPUTS}" | grep "MesosSubnet" | cut -f2)
+    AWS_PRIVATE_HOSTED_ZONE_ID=$(aws route53 list-hosted-zones | grep -B1 "${AWS_VPC_ID}" | grep -v "${AWS_VPC_ID}" | cut -f3 | cut -d'/' -f3)
     MESOS_LEADER_AMI=$(get_latest_internal_ami "mesos-leader")
 
     # Build parameters argument
     AWS_STACK_PARAMS="ParameterKey=KeyName,ParameterValue=${AWS_KEY_NAME}"
+    AWS_STACK_PARAMS="${AWS_STACK_PARAMS} ParameterKey=PrivateHostedZoneId,ParameterValue=${AWS_PRIVATE_HOSTED_ZONE_ID}"
     AWS_STACK_PARAMS="${AWS_STACK_PARAMS} ParameterKey=VpcId,ParameterValue=${AWS_VPC_ID}"
     AWS_STACK_PARAMS="${AWS_STACK_PARAMS} ParameterKey=MesosLeaderAMI,ParameterValue=${MESOS_LEADER_AMI}"
     AWS_STACK_PARAMS="${AWS_STACK_PARAMS} ParameterKey=MesosLeaderSubnet,ParameterValue=${AWS_MESOS_SUBNET}"
 
     aws cloudformation create-stack \
-      --stack-name "GeoTrellisSparkMesosLeaders" \
+      --stack-name "${GEOTRELLIS_SPARK_CLUSTER_NAME}GeoTrellisSparkMesosLeaders" \
       --template-body "file://troposphere/leader_template.json" \
       --parameters ${AWS_STACK_PARAMS}
 
-    wait_for_stack "GeoTrellisSparkMesosLeaders"
+    wait_for_stack "${GEOTRELLIS_SPARK_CLUSTER_NAME}GeoTrellisSparkMesosLeaders"
     ;;
 
 
   create-follower-stack)
     # Get CloudFormation VPC stack outputs
-    AWS_VPC_STACK_OUTPUTS=$(get_stack_outputs "GeoTrellisSparkVPC")
+    AWS_VPC_STACK_OUTPUTS=$(get_stack_outputs "${GEOTRELLIS_SPARK_CLUSTER_NAME}GeoTrellisSparkVPC")
 
     AWS_VPC_ID=$(echo "${AWS_VPC_STACK_OUTPUTS}" | grep "VpcId" | cut -f2)
     AWS_MESOS_SUBNET=$(echo "${AWS_VPC_STACK_OUTPUTS}" | grep "MesosSubnet" | cut -f2)
@@ -137,11 +141,11 @@ case "$1" in
 
     # Create cluster follower server stack
     aws cloudformation create-stack \
-      --stack-name "GeoTrellisSparkMesosFollowers" \
+      --stack-name "${GEOTRELLIS_SPARK_CLUSTER_NAME}GeoTrellisSparkMesosFollowers" \
       --template-body "file://troposphere/follower_template.json" \
       --parameters ${AWS_STACK_PARAMS}
 
-    wait_for_stack "GeoTrellisSparkMesosFollowers"
+    wait_for_stack "${GEOTRELLIS_SPARK_CLUSTER_NAME}GeoTrellisSparkMesosFollowers"
     ;;
 
 
