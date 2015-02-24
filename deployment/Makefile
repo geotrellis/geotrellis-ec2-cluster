@@ -5,6 +5,7 @@
 
 build:
 	@find troposphere -name "*.py" | grep -v "utils" | xargs -I{} python {}
+	@find troposphere -name "*.json" | xargs -I{} aws cloudformation validate-template --template-body file://{} > /dev/null
 
 clean:
 	@rm troposphere/*.json
