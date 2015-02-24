@@ -15,6 +15,7 @@
 
   roles:
     - { role: "geotrellis-spark-cluster.common" }
+    - { role: "azavea.pptpd", when: packing }
     - { role: "geotrellis-spark-cluster.hdfs", hdfs_namenode: True }
     - { role: "geotrellis-spark-cluster.mesos", mesos_leader: True }
     - { role: "geotrellis-spark-cluster.accumulo", accumulo_leader: True }
