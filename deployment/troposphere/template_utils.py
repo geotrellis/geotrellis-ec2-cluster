@@ -1,5 +1,3 @@
-import boto
-
 VPC_CIDR = '10.0.0.0/16'
 ALLOW_ALL_CIDR = '0.0.0.0/0'
 
@@ -22,15 +20,3 @@ def read_file(file_name):
     """
     with open(file_name, 'r') as f:
         return f.read()
-
-
-def validate_cloudformation_template(template_body):
-    """Validates the JSON of a CloudFormation template produced by Troposphere
-
-    Arguments
-    :param template_body: The string representation of CloudFormation template
-                          JSON
-    """
-    c = boto.connect_cloudformation()
-
-    return c.validate_template(template_body=template_body)

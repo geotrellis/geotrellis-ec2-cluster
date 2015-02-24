@@ -122,11 +122,9 @@ mesos_follower_auto_scaling_group = t.add_resource(asg.AutoScalingGroup(
 ))
 
 if __name__ == '__main__':
-    utils.validate_cloudformation_template(t.to_json())
-
     file_name = __file__.replace('.py', '.json')
 
     with open(file_name, 'w') as f:
         f.write(t.to_json())
 
-    print('Template validated and written to %s' % file_name)
+    print('Template written to %s' % file_name)
