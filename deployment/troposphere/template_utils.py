@@ -8,7 +8,8 @@ EC2_AVAILABILITY_ZONES = [
     'c',
 ]
 EC2_INSTANCE_TYPES = [
-    't2.medium'
+    'r3.large',
+    'i2.2xlarge'
 ]
 
 

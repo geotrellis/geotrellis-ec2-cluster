@@ -41,6 +41,13 @@ mesos_follower_instance_profile_param = t.add_parameter(Parameter(
     Description='Physical resource ID of an AWS::IAM::Role for the followers'
 ))
 
+mesos_follower_instance_type_param = t.add_parameter(Parameter(
+    'MesosFollowerInstanceType', Type='String', Default='i2.2xlarge',
+    Description='Follower EC2 instance type',
+    AllowedValues=utils.EC2_INSTANCE_TYPES,
+    ConstraintDescription='must be a valid EC2 instance type.'
+))
+
 mesos_follower_subnet_param = t.add_parameter(Parameter(
     'MesosFollowerSubnet', Type='CommaDelimitedList',
     Description='A list of subnets to associate with the Mesos followers'
@@ -92,7 +99,7 @@ mesos_follower_launch_config = t.add_resource(asg.LaunchConfiguration(
     ],
     ImageId=Ref(mesos_follower_ami_param),
     IamInstanceProfile=Ref(mesos_follower_instance_profile_param),
-    InstanceType='i2.2xlarge',
+    InstanceType=Ref(mesos_follower_instance_type_param),
     KeyName=Ref(keyname_param),
     SecurityGroups=[Ref(mesos_follower_security_group)],
     UserData=Base64(utils.read_file('cloud-config/follower.yml'))

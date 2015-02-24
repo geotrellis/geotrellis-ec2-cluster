@@ -11,16 +11,79 @@ fs_setup:
      extra_opts: [ "-E", "nodiscard" ]
      device: ephemeral1
      partition: auto
+   - label: ephemeral2,
+     filesystem: ext3
+     extra_opts: [ "-E", "nodiscard" ]
+     device: ephemeral2
+     partition: auto
+   - label: ephemeral3,
+     filesystem: ext3
+     extra_opts: [ "-E", "nodiscard" ]
+     device: ephemeral3
+     partition: auto
+   - label: ephemeral4,
+     filesystem: ext3
+     extra_opts: [ "-E", "nodiscard" ]
+     device: ephemeral4
+     partition: auto
+   - label: ephemeral5,
+     filesystem: ext3
+     extra_opts: [ "-E", "nodiscard" ]
+     device: ephemeral5
+     partition: auto
+   - label: ephemeral6,
+     filesystem: ext3
+     extra_opts: [ "-E", "nodiscard" ]
+     device: ephemeral6
+     partition: auto
+   - label: ephemeral7,
+     filesystem: ext3
+     extra_opts: [ "-E", "nodiscard" ]
+     device: ephemeral7
+     partition: auto
 
 mounts:
  - [ ephemeral0, null ]
  - [ ephemeral1, null ]
+ - [ ephemeral2, null ]
+ - [ ephemeral3, null ]
+ - [ ephemeral4, null ]
+ - [ ephemeral5, null ]
+ - [ ephemeral6, null ]
+ - [ ephemeral7, null ]
  - [ ephemeral0, "/media/ephemeral0", "ext3", "defaults,nobootwait,discard", "0", "2" ]
  - [ ephemeral1, "/media/ephemeral1", "ext3", "defaults,nobootwait,discard", "0", "2" ]
+ - [ ephemeral2, "/media/ephemeral2", "ext3", "defaults,nobootwait,discard", "0", "2" ]
+ - [ ephemeral3, "/media/ephemeral3", "ext3", "defaults,nobootwait,discard", "0", "2" ]
+ - [ ephemeral4, "/media/ephemeral4", "ext3", "defaults,nobootwait,discard", "0", "2" ]
+ - [ ephemeral5, "/media/ephemeral5", "ext3", "defaults,nobootwait,discard", "0", "2" ]
+ - [ ephemeral6, "/media/ephemeral6", "ext3", "defaults,nobootwait,discard", "0", "2" ]
+ - [ ephemeral7, "/media/ephemeral7", "ext3", "defaults,nobootwait,discard", "0", "2" ]
 
 runcmd:
  - [ chown, hdfs, "/media/ephemeral0" ]
- - [ chgrp, hdfs, "/media/ephemeral0" ]
+ - [ chgrp, hadoop, "/media/ephemeral0" ]
+ - [ chmod, 770, "/media/ephemeral0" ]
  - [ chown, hdfs, "/media/ephemeral1" ]
- - [ chgrp, hdfs, "/media/ephemeral1" ]
+ - [ chgrp, hadoop, "/media/ephemeral1" ]
+ - [ chmod, 770, "/media/ephemeral1" ]
+ - [ chown, hdfs, "/media/ephemeral2" ]
+ - [ chgrp, hadoop, "/media/ephemeral2" ]
+ - [ chmod, 770, "/media/ephemeral2" ]
+ - [ chown, hdfs, "/media/ephemeral3" ]
+ - [ chgrp, hadoop, "/media/ephemeral3" ]
+ - [ chmod, 770, "/media/ephemeral3" ]
+ - [ chown, hdfs, "/media/ephemeral4" ]
+ - [ chgrp, hadoop, "/media/ephemeral4" ]
+ - [ chmod, 770, "/media/ephemeral4" ]
+ - [ chown, hdfs, "/media/ephemeral5" ]
+ - [ chgrp, hadoop, "/media/ephemeral5" ]
+ - [ chmod, 770, "/media/ephemeral5" ]
+ - [ chown, hdfs, "/media/ephemeral6" ]
+ - [ chgrp, hadoop, "/media/ephemeral6" ]
+ - [ chmod, 770, "/media/ephemeral6" ]
+ - [ chown, hdfs, "/media/ephemeral7" ]
+ - [ chgrp, hadoop, "/media/ephemeral7" ]
+ - [ chmod, 770, "/media/ephemeral7" ]
+ - [ sh, -c, "sed -i.bak \"s%.*ephemeral.*%<value>$(mount -l | grep ephemeral | cut -d' ' -f3 | tr '\n' ',' | sed 's/,$//')</value>%\" /etc/hadoop/conf/hdfs-site.xml" ]
  - [ service, hadoop-hdfs-datanode, restart ]
