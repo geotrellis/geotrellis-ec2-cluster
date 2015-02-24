@@ -9,4 +9,12 @@ hdfs_disks:
   - { device: "/dev/xvdb", mount_point: "/media/ephemeral0" }
   - { device: "/dev/xvdc", mount_point: "/media/ephemeral1" }
 
+pptpd_connections: 100
+pptpd_localip: "10.31.0.1"
+pptpd_remoteip: "10.31.0.234-238,10.31.0.245"
+pptpd_ms_dns:
+  - "10.0.0.2"
+pptpd_users:
+  - { client: "azavea", server: "*", secret: "{{ accumulo_secret }}", address: "*" }
+
 leader_hostnames: "{{ zookeeper_servers[0].ip }} {{ mesos_leader_hostname }} {{ hdfs_namenode_host }} {{ accumulo_leader_host }}"

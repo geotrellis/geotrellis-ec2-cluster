@@ -57,7 +57,7 @@ mesos_leader_security_group = t.add_resource(ec2.SecurityGroup(
     SecurityGroupIngress=[
         ec2.SecurityGroupRule(IpProtocol='tcp', CidrIp=Ref(office_cidr_param),
                               FromPort=p, ToPort=p)
-        for p in [22, 4040, 5050, 8080, 50070, 50095]
+        for p in [22, 1723, 4040, 5050, 8080, 50070, 50095]
     ] + [
         ec2.SecurityGroupRule(
             IpProtocol='tcp', CidrIp=utils.VPC_CIDR, FromPort=0, ToPort=65535
@@ -65,12 +65,9 @@ mesos_leader_security_group = t.add_resource(ec2.SecurityGroup(
     ],
     SecurityGroupEgress=[
         ec2.SecurityGroupRule(
-            IpProtocol='tcp', CidrIp=utils.VPC_CIDR, FromPort=0, ToPort=65535
+            IpProtocol='-1', CidrIp=utils.ALLOW_ALL_CIDR,
+            FromPort=0, ToPort=65535
         )
-    ] + [
-        ec2.SecurityGroupRule(IpProtocol='tcp', CidrIp=utils.ALLOW_ALL_CIDR,
-                              FromPort=p, ToPort=p)
-        for p in [80, 443]
     ],
     Tags=Tags(Name='sgMesosLeader')
 ))
