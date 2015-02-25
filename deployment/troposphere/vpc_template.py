@@ -74,9 +74,4 @@ t.add_output([
 ])
 
 if __name__ == '__main__':
-    file_name = __file__.replace('.py', '.json')
-
-    with open(file_name, 'w') as f:
-        f.write(t.to_json())
-
-    print('Template written to %s' % file_name)
+    print t.to_json()
