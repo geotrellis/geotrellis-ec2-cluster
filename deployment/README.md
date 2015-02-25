@@ -19,7 +19,7 @@ Lastly, install the AWS CLI and Troposphere:
 
 ```bash
 $ cd deployment
-$ pip install -r deployment/requirements.txt
+$ pip install -r requirements.txt
 ```
 
 ### Amazon Machine Images (AMIs)
