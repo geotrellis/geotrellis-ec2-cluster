@@ -15,8 +15,6 @@
     - hard
 
 - name: Set system swappiness
-  copy: content="vm.swappiness=0"
-        dest=/etc/sysctl.d/10-swappiness.conf
-        mode=0644
-  notify:
-    - Update sysctl
+  sysctl: name="vm.swappiness"
+          value="0"
+          state=present

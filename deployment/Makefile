@@ -1,14 +1,15 @@
-.PHONY: build clean
-.PHONY: vpc-stack
-.PHONY: leader-stack follower-stack
-.PHONY: leader-ami follower-ami
+TROPOSPHERE_SRC := $(wildcard troposphere/*_template.py)
+CLOUDFORMATION_SRC := $(patsubst troposphere/%_template.py,troposphere/%_template.json,$(TROPOSPHERE_SRC))
 
-build:
-	@find troposphere -name "*.py" | grep -v "utils" | xargs -I{} python {}
-	@find troposphere -name "*.json" | xargs -I{} aws cloudformation validate-template --template-body file://{} > /dev/null
+troposphere/%_template.json: troposphere/%_template.py
+	@python $< > $@
+	@aws cloudformation validate-template --template-body file://$@ > /dev/null
+	@echo "Template written and validated to $@"
+
+build: $(CLOUDFORMATION_SRC)
 
 clean:
-	@rm troposphere/*.json
+	@rm -f troposphere/*.json
 
 vpc-stack: build
 	./deployment-helper.sh create-vpc-stack
@@ -27,3 +28,5 @@ leader-ami:
 
 follower-ami:
 	./deployment-helper.sh create-follower-ami
+
+.PHONY: build clean vpc-stack leader-stack follower-stack leader-ami follower-ami

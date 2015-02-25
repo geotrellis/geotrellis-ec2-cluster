@@ -2,31 +2,29 @@
   "variables": {
     "aws_region": "us-east-1",
     "aws_ssh_username": "ubuntu",
-    "aws_access_key": "{{env `AWS_ACCESS_KEY_ID`}}",
-    "aws_secret_key": "{{env `AWS_SECRET_ACCESS_KEY`}}",
     "aws_ubuntu_ami": ""
   },
   "builders": [
     {
       "name": "mesos-leader",
       "type": "amazon-ebs",
-      "access_key": "{{user `aws_access_key`}}",
-      "secret_key": "{{user `aws_secret_key` }}",
       "region": "{{user `aws_region`}}",
       "source_ami": "{{user `aws_ubuntu_ami`}}",
       "instance_type": "r3.large",
       "ssh_username": "{{user `aws_ssh_username`}}",
       "ami_name": "mesos-leader-{{timestamp}}",
+      "run_tags": {
+        "PackerBuilder": "amazon-ebs"
+      },
       "tags": {
-        "name": "mesos-leader"
+        "Name": "mesos-leader",
+        "Created": "{{ isotime }}"
       },
       "associate_public_ip_address": true
     },
     {
       "name": "mesos-follower",
       "type": "amazon-ebs",
-      "access_key": "{{user `aws_access_key`}}",
-      "secret_key": "{{user `aws_secret_key` }}",
       "region": "{{user `aws_region`}}",
       "source_ami": "{{user `aws_ubuntu_ami`}}",
       "instance_type": "i2.2xlarge",
@@ -43,8 +41,12 @@
         }
       ],
       "user_data_file": "cloud-config/packer.yml",
+      "run_tags": {
+        "PackerBuilder": "amazon-ebs"
+      },
       "tags": {
-        "name": "mesos-follower"
+        "Name": "mesos-follower",
+        "Created": "{{ isotime }}"
       },
       "associate_public_ip_address": true
     }
@@ -56,7 +58,7 @@
         "sleep 5",
         "sudo apt-get update -qq",
         "sudo apt-get install python-pip python-dev -y",
-        "sudo pip install ansible==1.8.1"
+        "sudo pip install ansible==1.8.2"
       ]
     },
     {

@@ -42,6 +42,13 @@ mesos_leader_instance_profile_param = t.add_parameter(Parameter(
     Description='Physical resource ID of an AWS::IAM::Role for the leader'
 ))
 
+mesos_leader_instance_type_param = t.add_parameter(Parameter(
+    'MesosLeaderInstanceType', Type='String', Default='r3.large',
+    Description='Leader EC2 instance type',
+    AllowedValues=utils.EC2_INSTANCE_TYPES,
+    ConstraintDescription='must be a valid EC2 instance type.'
+))
+
 mesos_leader_subnet_param = t.add_parameter(Parameter(
     'MesosLeaderSubnet', Type='CommaDelimitedList',
     Description='A list of subnets to associate with the Mesos leaders'
@@ -83,7 +90,7 @@ mesos_leader = t.add_resource(ec2.Instance(
             "Ebs": {"VolumeSize": "256"}
         }
     ],
-    InstanceType='r3.large',
+    InstanceType=Ref(mesos_leader_instance_type_param),
     KeyName=Ref(keyname_param),
     ImageId=Ref(mesos_leader_ami_param),
     IamInstanceProfile=Ref(mesos_leader_instance_profile_param),
@@ -139,9 +146,4 @@ mesos_leader_private_dns = t.add_resource(r53.RecordSetGroup(
 ))
 
 if __name__ == '__main__':
-    file_name = __file__.replace('.py', '.json')
-
-    with open(file_name, 'w') as f:
-        f.write(t.to_json())
-
-    print('Template written to %s' % file_name)
+    print t.to_json()
