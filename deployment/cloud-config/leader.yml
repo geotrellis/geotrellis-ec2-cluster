@@ -1,0 +1,4 @@
+#cloud-config
+
+runcmd:
+ - [ sh, -c, "echo \"zookeeper.service.geotrellis-spark.internal $(curl -s http://instance-data.ec2.internal/latest/meta-data/local-ipv4)\" >> /etc/hosts" ]

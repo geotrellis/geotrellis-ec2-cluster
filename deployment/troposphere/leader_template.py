@@ -104,6 +104,7 @@ mesos_leader = t.add_resource(ec2.Instance(
             DeleteOnTermination=True,
         )
     ],
+    UserData=Base64(utils.read_file('cloud-config/leader.yml')),
     Tags=Tags(Name='MesosLeader')
 ))
 
