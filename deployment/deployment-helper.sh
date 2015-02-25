@@ -65,8 +65,11 @@ function get_latest_internal_ami() {
 }
 
 function create_ami() {
+  AWS_KEY_ID=$(cat ~/.aws/credentials | grep "${AWS_DEFAULT_PROFILE}" -A2 | grep aws_access_key_id | cut -d'=' -f2 | tr -d ' ')
+  AWS_SECRET_KEY=$(cat ~/.aws/credentials | grep "${AWS_DEFAULT_PROFILE}" -A2 | grep aws_secret_access_key | cut -d'=' -f2 | tr -d ' ')
+
   # Build an AMI for the application servers
-  packer build \
+  AWS_ACCESS_KEY_ID="${AWS_KEY_ID}" AWS_SECRET_ACCESS_KEY="${AWS_SECRET_KEY}" packer build \
     -only="${1}" \
     -var "aws_ubuntu_ami=$(get_latest_ubuntu_ami)" \
     packer/template.js
