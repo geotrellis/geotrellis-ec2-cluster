@@ -1,5 +1,7 @@
 {
   "variables": {
+    "aws_access_key": "",
+    "aws_secret_key": "",
     "aws_region": "us-east-1",
     "aws_ssh_username": "ubuntu",
     "aws_ubuntu_ami": ""
@@ -8,9 +10,11 @@
     {
       "name": "mesos-leader",
       "type": "amazon-ebs",
+      "access_key": "{{ user `aws_access_key`}}",
+      "secret_key": "{{ user `aws_secret_key`}}",
       "region": "{{user `aws_region`}}",
       "source_ami": "{{user `aws_ubuntu_ami`}}",
-      "instance_type": "r3.large",
+      "instance_type": "m3.large",
       "ssh_username": "{{user `aws_ssh_username`}}",
       "ami_name": "mesos-leader-{{timestamp}}",
       "run_tags": {
@@ -25,19 +29,17 @@
     {
       "name": "mesos-follower",
       "type": "amazon-ebs",
+      "access_key": "{{ user `aws_access_key`}}",
+      "secret_key": "{{ user `aws_secret_key`}}",
       "region": "{{user `aws_region`}}",
       "source_ami": "{{user `aws_ubuntu_ami`}}",
-      "instance_type": "i2.2xlarge",
+      "instance_type": "m3.large",
       "ssh_username": "{{user `aws_ssh_username`}}",
       "ami_name": "mesos-follower-{{timestamp}}",
       "ami_block_device_mappings": [
         {
-          "device_name": "/dev/xvdb",
+          "device_name": "/dev/sdb",
           "virtual_name": "ephemeral0"
-        },
-        {
-          "device_name": "/dev/xvdc",
-          "virtual_name": "ephemeral1"
         }
       ],
       "user_data_file": "cloud-config/packer.yml",

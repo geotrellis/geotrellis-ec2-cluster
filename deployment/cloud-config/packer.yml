@@ -1,12 +1,5 @@
 #cloud-config
 
-fs_setup:
-   - label: ephemeral0,
-     filesystem: ext3
-     extra_opts: [ "-E", "nodiscard" ]
-     device: ephemeral0
-     partition: auto
-
 mounts:
  - [ ephemeral0, null ]
  - [ ephemeral0, "/media/ephemeral0", "ext3", "defaults,nobootwait,discard", "0", "2" ]

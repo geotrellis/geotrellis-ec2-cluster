@@ -6,6 +6,8 @@ if env | grep -q "GEOTRELLIS_SPARK_DEPLOY_DEBUG"; then
   set -x
 fi
 
+GEOTRELLIS_SPARK_INSTANCE_TYPE=${GEOTRELLIS_SPARK_INSTANCE_TYPE:-m3.large}
+
 function get_latest_ubuntu_ami() {
   # 1. Get list of daily Ubuntu AMIs
   # 2. Filter AMIs with EBS instance store, amd64 architecture, and in
@@ -40,7 +42,7 @@ function wait_for_stack() {
       | cut -f"7,8" \
       | egrep -q "(CREATE|UPDATE|ROLLBACK)_COMPLETE" && break
 
-    n=$[$n+1]
+    n=$((n + 1))
     sleep 60
   done
 
@@ -65,12 +67,11 @@ function get_latest_internal_ami() {
 }
 
 function create_ami() {
-  AWS_KEY_ID=$(cat ~/.aws/credentials | grep "${AWS_DEFAULT_PROFILE}" -A2 | grep aws_access_key_id | cut -d'=' -f2 | tr -d ' ')
-  AWS_SECRET_KEY=$(cat ~/.aws/credentials | grep "${AWS_DEFAULT_PROFILE}" -A2 | grep aws_secret_access_key | cut -d'=' -f2 | tr -d ' ')
-
   # Build an AMI for the application servers
-  AWS_ACCESS_KEY_ID="${AWS_KEY_ID}" AWS_SECRET_ACCESS_KEY="${AWS_SECRET_KEY}" packer build \
+  packer build \
     -only="${1}" \
+    -var "aws_access_key=$(grep "${AWS_DEFAULT_PROFILE}" -A2 ~/.aws/credentials | grep aws_access_key_id | cut -d'=' -f2 | tr -d ' ')" \
+    -var "aws_secret_key=$(grep "${AWS_DEFAULT_PROFILE}" -A2 ~/.aws/credentials | grep aws_secret_access_key | cut -d'=' -f2 | tr -d ' ')" \
     -var "aws_ubuntu_ami=$(get_latest_ubuntu_ami)" \
     packer/template.js
 }
@@ -140,6 +141,7 @@ case "$1" in
     AWS_STACK_PARAMS="${AWS_STACK_PARAMS} ParameterKey=VpcId,ParameterValue=${AWS_VPC_ID}"
     AWS_STACK_PARAMS="${AWS_STACK_PARAMS} ParameterKey=GlobalNotificationsARN,ParameterValue=${AWS_SNS_TOPIC}"
     AWS_STACK_PARAMS="${AWS_STACK_PARAMS} ParameterKey=MesosFollowerAMI,ParameterValue=${MESOS_FOLLOWER_AMI}"
+    AWS_STACK_PARAMS="${AWS_STACK_PARAMS} ParameterKey=MesosFollowerInstanceType,ParameterValue=${GEOTRELLIS_SPARK_INSTANCE_TYPE}"
     AWS_STACK_PARAMS="${AWS_STACK_PARAMS} ParameterKey=MesosFollowerSubnet,ParameterValue=${AWS_MESOS_SUBNET}"
 
     # Create cluster follower server stack

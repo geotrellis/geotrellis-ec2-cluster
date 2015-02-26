@@ -13,6 +13,7 @@ $ export AWS_DEFAULT_REGION=us-east-1
 $ export AWS_KEY_NAME=geotrellis-spark-test
 $ export AWS_SNS_TOPIC=arn:aws:sns:us-east-1...
 $ export GEOTRELLIS_SPARK_CLUSTER_NAME=Joker
+$ export GEOTRELLIS_SPARK_INSTANCE_TYPE=m3.large
 ```
 
 Lastly, install the AWS CLI and Troposphere:

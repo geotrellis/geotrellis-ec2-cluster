@@ -8,8 +8,18 @@ EC2_AVAILABILITY_ZONES = [
     'c',
 ]
 EC2_INSTANCE_TYPES = [
+    'c4.8xlarge',
+    'c3.2xlarge',
+    'cc1.4xlarge',
+    'i2.xlarge',
+    'i2.2xlarge',
+    'i2.4xlarge',
+    'i2.8xlarge',
+    'm2.4xlarge',
+    'm3.large',
+    'm3.2xlarge',
     'r3.large',
-    'i2.2xlarge'
+    'r3.2xlarge'
 ]
 
 

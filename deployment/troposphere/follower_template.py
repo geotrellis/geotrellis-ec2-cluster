@@ -89,12 +89,36 @@ mesos_follower_launch_config = t.add_resource(asg.LaunchConfiguration(
     AssociatePublicIpAddress=True,
     BlockDeviceMappings=[
         {
-            "DeviceName": "/dev/xvdb",
+            "DeviceName": "/dev/sdb",
             "VirtualName": "ephemeral0"
         },
         {
-            "DeviceName": "/dev/xvdc",
+            "DeviceName": "/dev/sdc",
             "VirtualName": "ephemeral1"
+        },
+        {
+            "DeviceName": "/dev/sdd",
+            "VirtualName": "ephemeral2"
+        },
+        {
+            "DeviceName": "/dev/sde",
+            "VirtualName": "ephemeral3"
+        },
+        {
+            "DeviceName": "/dev/sdf",
+            "VirtualName": "ephemeral4"
+        },
+        {
+            "DeviceName": "/dev/sdg",
+            "VirtualName": "ephemeral5"
+        },
+        {
+            "DeviceName": "/dev/sdh",
+            "VirtualName": "ephemeral6"
+        },
+        {
+            "DeviceName": "/dev/sdi",
+            "VirtualName": "ephemeral7"
         }
     ],
     ImageId=Ref(mesos_follower_ami_param),

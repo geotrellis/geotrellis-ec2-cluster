@@ -25,6 +25,7 @@ hdfs_namenode_properties:
 hdfs_datanode_properties:
   - { name: "dfs.permissions.superusergroup", value: "hadoop" }
   - { name: "dfs.datanode.data.dir", value: "{{ hdfs_disks | map(attribute='mount_point') | join(',') }}" }
+  - { name: "dfs.datanode.data.dir.perm", value: "770" }
   - { name: "dfs.datanode.synconclose", value: "true" }
 
 accumulo_leader_host: "accumulo-leader.service.geotrellis-spark.internal"

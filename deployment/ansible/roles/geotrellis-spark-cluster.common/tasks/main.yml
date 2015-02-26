@@ -17,4 +17,5 @@
 - name: Set system swappiness
   sysctl: name="vm.swappiness"
           value="0"
+          reload=yes
           state=present

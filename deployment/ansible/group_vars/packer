@@ -6,7 +6,7 @@ ntp_servers:
   - 3.amazon.pool.ntp.org
 
 hdfs_disks:
-  - { device: "/dev/xvdb", mount_point: "/media/ephemeral0" }
+  - { device: "/dev/sdb", mount_point: "/media/ephemeral0" }
 
 pptpd_connections: 100
 pptpd_localip: "10.31.0.1"
