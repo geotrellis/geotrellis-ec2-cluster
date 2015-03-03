@@ -17,6 +17,7 @@
       "instance_type": "m3.large",
       "ssh_username": "{{user `aws_ssh_username`}}",
       "ami_name": "mesos-leader-{{timestamp}}",
+      "user_data_file": "cloud-config/packer-leader.yml",
       "run_tags": {
         "PackerBuilder": "amazon-ebs"
       },
@@ -42,7 +43,7 @@
           "virtual_name": "ephemeral0"
         }
       ],
-      "user_data_file": "cloud-config/packer.yml",
+      "user_data_file": "cloud-config/packer-follower.yml",
       "run_tags": {
         "PackerBuilder": "amazon-ebs"
       },

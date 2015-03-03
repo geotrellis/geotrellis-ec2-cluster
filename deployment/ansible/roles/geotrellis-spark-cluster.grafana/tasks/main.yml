@@ -1,0 +1,13 @@
+---
+- name: Configure Grafana site
+  template: src=grafana-site.conf.j2
+            dest=/etc/nginx/sites-available/grafana-site.conf
+  notify:
+      - Restart Nginx
+
+- name: Enable Grafana site
+  file: src=/etc/nginx/sites-available/grafana-site.conf
+        dest=/etc/nginx/sites-enabled/grafana-site
+        state=link
+  notify:
+      - Restart Nginx

@@ -64,7 +64,18 @@ mesos_leader_security_group = t.add_resource(ec2.SecurityGroup(
     SecurityGroupIngress=[
         ec2.SecurityGroupRule(IpProtocol='tcp', CidrIp=Ref(office_cidr_param),
                               FromPort=p, ToPort=p)
-        for p in [22, 1723, 4040, 5050, 8080, 50070, 50095]
+        for p in [
+            22,     # SSH
+            1723,   # PPTPD
+            4040,   # Spark
+            5050,   # Mesos
+            8080,   # Marathon
+            8081,   # Graphite Web
+            8090,   # Grafana
+            9200,   # ElasticSearch
+            50070,  # HDFS
+            50095   # Accumulo
+        ]
     ] + [
         ec2.SecurityGroupRule(
             IpProtocol='tcp', CidrIp=utils.VPC_CIDR, FromPort=0, ToPort=65535
@@ -139,6 +150,13 @@ mesos_leader_private_dns = t.add_resource(r53.RecordSetGroup(
         r53.RecordSet(
             'dnsAccumulo',
             Name='accumulo-leader.service.geotrellis-spark.internal.',
+            Type='A',
+            TTL='60',
+            ResourceRecords=[GetAtt(mesos_leader, 'PrivateIp')]
+        ),
+        r53.RecordSet(
+            'dnsMonitoring',
+            Name='monitoring.service.geotrellis-spark.internal.',
             Type='A',
             TTL='60',
             ResourceRecords=[GetAtt(mesos_leader, 'PrivateIp')]

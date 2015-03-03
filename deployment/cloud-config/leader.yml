@@ -1,7 +1,10 @@
 #cloud-config
 
 runcmd:
- - [ sh, -c, "echo \"$(curl -s http://instance-data.ec2.internal/latest/meta-data/local-ipv4) zookeeper.service.geotrellis-spark.internal\" >> /etc/hosts" ]
- - [ sh, -c, "echo \"$(curl -s http://instance-data.ec2.internal/latest/meta-data/local-ipv4) mesos-leader.service.geotrellis-spark.internal\" >> /etc/hosts" ]
- - [ sh, -c, "echo \"$(curl -s http://instance-data.ec2.internal/latest/meta-data/local-ipv4) namenode.service.geotrellis-spark.internal\" >> /etc/hosts" ]
- - [ sh, -c, "echo \"$(curl -s http://instance-data.ec2.internal/latest/meta-data/local-ipv4) accumulo-leader.service.geotrellis-spark.internal\" >> /etc/hosts" ]
+ - [ sh, -c, "sed -i.bak \"s%.*zookeeper.*%$(curl -s http://instance-data.ec2.internal/latest/meta-data/local-ipv4) zookeeper.service.geotrellis-spark.internal%\" /etc/hosts" ]
+ - [ sh, -c, "sed -i.bak \"s%.*mesos-leader.*%$(curl -s http://instance-data.ec2.internal/latest/meta-data/local-ipv4) zookeeper.service.geotrellis-spark.internal%\" /etc/hosts" ]
+ - [ sh, -c, "sed -i.bak \"s%.*namenode.*%$(curl -s http://instance-data.ec2.internal/latest/meta-data/local-ipv4) zookeeper.service.geotrellis-spark.internal%\" /etc/hosts" ]
+ - [ sh, -c, "sed -i.bak \"s%.*accumulo-leader.*%$(curl -s http://instance-data.ec2.internal/latest/meta-data/local-ipv4) zookeeper.service.geotrellis-spark.internal%\" /etc/hosts" ]
+ - [ sh, -c, "sed -i.bak \"s%.*monitoring.*%$(curl -s http://instance-data.ec2.internal/latest/meta-data/local-ipv4) zookeeper.service.geotrellis-spark.internal%\" /etc/hosts" ]
+ - [ sh, -c, "sed -i.bak \"s%localhost:8081%$(curl -s http://instance-data.ec2.internal/latest/meta-data/public-hostname):8081%\" /opt/grafana-*/config.js" ]
+ - [ sh, -c, "sed -i.bak \"s%localhost:9200%$(curl -s http://instance-data.ec2.internal/latest/meta-data/public-hostname):9200%\" /opt/grafana-*/config.js" ]

@@ -30,6 +30,9 @@ Mesos                  | 5050  | [http://localhost:5050](http://localhost:5050)
 Marathon               | 8080  | [http://localhost:8080](http://localhost:8080)
 HDFS                   | 50070 | [http://localhost:50070](http://localhost:50070)
 Accumulo               | 50095 | [http://localhost:50095](http://localhost:50095)
+Graphite               | 8081  | [http://localhost:8081](http://localhost:8081)
+ElasticSearch          | 9200  | [http://localhost:9200](http://localhost:9200)
+Grafana                | 8090  | [http://localhost:8090](http://localhost:8090)
 
 ### Caching
 

@@ -1,0 +1,11 @@
+# Enable Graphite
+*.sink.graphite.class=org.apache.spark.metrics.sink.GraphiteSink
+*.sink.graphite.host={{ graphite_host }}
+*.sink.graphite.port={{ graphite_port }}
+*.sink.graphite.period=10
+ 
+# Enable jvm source for instance master, worker, driver and executor
+master.source.jvm.class=org.apache.spark.metrics.source.JvmSource
+worker.source.jvm.class=org.apache.spark.metrics.source.JvmSource
+driver.source.jvm.class=org.apache.spark.metrics.source.JvmSource
+executor.source.jvm.class=org.apache.spark.metrics.source.JvmSource

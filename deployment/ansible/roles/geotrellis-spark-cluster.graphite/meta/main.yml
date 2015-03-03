@@ -1,0 +1,3 @@
+---
+dependencies:
+  - { role: "azavea.graphite", graphite_web_secret_key: "1_jz4)f8%5#ucq6oes+mogcc!z4v99(@%uvxcvpik*p#g@=1t#" }

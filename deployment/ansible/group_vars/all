@@ -31,3 +31,23 @@ hdfs_datanode_properties:
 accumulo_leader_host: "accumulo-leader.service.geotrellis-spark.internal"
 accumulo_instance_name: "geotrellis-accumulo-cluster"
 accumulo_secret: "secret"
+
+graphite_port: 2003
+graphite_host: "monitoring.service.geotrellis-spark.internal"
+graphite_web_port: 8081
+
+apache_port: 8081
+
+grafana_port: 8090
+grafana_graphite_url: "http://localhost:{{ graphite_web_port }}"
+grafana_elasticsearch_url: "http://localhost:{{ elasticsearch_http_port }}"
+
+collectd_interval: 3
+collectd_install_recommends: False
+collectd_load_plugins:
+  - cpu
+  - df
+  - disk
+  - interface
+  - memory
+  - write_graphite
