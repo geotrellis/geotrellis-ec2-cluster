@@ -1,0 +1,4 @@
+---
+- name: Configure Spark GraphiteSink
+  template: src=metrics.properties.j2
+            dest=/etc/spark/conf/metrics.properties

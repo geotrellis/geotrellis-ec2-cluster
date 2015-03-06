@@ -1,0 +1,4 @@
+---
+dependencies:
+  - { role: "azavea.grafana" }
+  - { role: "azavea.nginx", nginx_delete_default_site: True }

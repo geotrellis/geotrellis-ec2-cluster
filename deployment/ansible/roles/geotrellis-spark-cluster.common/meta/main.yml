@@ -3,4 +3,5 @@ dependencies:
   - { role: "azavea.ntp" }
   - { role: "azavea.java" }
   - { role: "azavea.libgdal-java" }
-  - { role: "azavea.spark" }
+  - { role: "geotrellis-spark-cluster.collectd" }
+  - { role: "geotrellis-spark-cluster.spark" }

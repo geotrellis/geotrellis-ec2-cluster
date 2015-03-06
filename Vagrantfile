@@ -80,7 +80,8 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
       "zookeeper.service.geotrellis-spark.internal",
       "namenode.service.geotrellis-spark.internal",
       "mesos-leader.service.geotrellis-spark.internal",
-      "accumulo-leader.service.geotrellis-spark.internal"
+      "accumulo-leader.service.geotrellis-spark.internal",
+      "monitoring.service.geotrellis-spark.internal"
     ]
 
     leader.vm.hostname = "leader"
@@ -98,6 +99,12 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     leader.vm.network "forwarded_port", guest: 50070, host: 50070
     # Accumulo console
     leader.vm.network "forwarded_port", guest: 50095, host: 50095
+    # Graphite Web UI
+    leader.vm.network "forwarded_port", guest: 8081, host: 8081
+    # ElasticSearch HTTP endpoint
+    leader.vm.network "forwarded_port", guest: 9200, host: 9200
+    # Grafana
+    leader.vm.network "forwarded_port", guest: 8090, host: 8090
 
     leader.vm.provider "virtualbox" do |v|
       v.memory = 3072
