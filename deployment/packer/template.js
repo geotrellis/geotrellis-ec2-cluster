@@ -2,7 +2,7 @@
   "variables": {
     "aws_access_key": "",
     "aws_secret_key": "",
-    "aws_region": "us-east-1",
+    "aws_region": "{{ env `AWS_DEFAULT_REGION`}}",
     "aws_ssh_username": "ubuntu",
     "aws_ubuntu_ami": ""
   },
