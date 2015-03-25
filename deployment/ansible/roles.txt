@@ -12,3 +12,4 @@ azavea.pptpd,0.2.0
 azavea.graphite,0.4.0
 azavea.grafana,0.1.0
 azavea.nginx,0.2.0
+azavea.apache2,0.2.2
