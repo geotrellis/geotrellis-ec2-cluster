@@ -13,3 +13,10 @@
         job="/usr/local/bin/accumulo-leader-cron >> /var/log/accumulo-leader-cron.log 2>&1"
         cron_file="accumulo-leader"
         state=present
+
+- name: Configure Accumulo Tracer service
+  template: src=accumulo-tracer.conf.j2
+            dest=/etc/init/accumulo-tracer.conf
+            mode=0644
+  notify:
+    - Restart Accumulo Tracer

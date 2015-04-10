@@ -1,0 +1,8 @@
+description "accumulo tracer"
+
+start on stopped rc RUNLEVEL=[2345]
+respawn
+setuid accumulo
+chdir /var/lib/accumulo
+
+exec /usr/bin/accumulo tracer --address {{ accumulo_leader_host }} >>/var/log/accumulo/logs/tracer.out 2>>/var/log/accumulo/logs/tracer.err
