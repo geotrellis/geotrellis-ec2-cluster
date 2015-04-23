@@ -1,17 +1,14 @@
 {
   "variables": {
-    "aws_access_key": "",
-    "aws_secret_key": "",
-    "aws_region": "{{ env `AWS_DEFAULT_REGION`}}",
+    "aws_region": "",
     "aws_ssh_username": "ubuntu",
-    "aws_ubuntu_ami": ""
+    "aws_ubuntu_ami": "",
+    "stack_type": ""
   },
   "builders": [
     {
       "name": "mesos-leader",
       "type": "amazon-ebs",
-      "access_key": "{{ user `aws_access_key`}}",
-      "secret_key": "{{ user `aws_secret_key`}}",
       "region": "{{user `aws_region`}}",
       "source_ami": "{{user `aws_ubuntu_ami`}}",
       "instance_type": "m3.large",
@@ -23,15 +20,14 @@
       },
       "tags": {
         "Name": "mesos-leader",
-        "Created": "{{ isotime }}"
+        "Created": "{{ isotime }}",
+        "StackType": "{{ user `stack_type` }}"
       },
       "associate_public_ip_address": true
     },
     {
       "name": "mesos-follower",
       "type": "amazon-ebs",
-      "access_key": "{{ user `aws_access_key`}}",
-      "secret_key": "{{ user `aws_secret_key`}}",
       "region": "{{user `aws_region`}}",
       "source_ami": "{{user `aws_ubuntu_ami`}}",
       "instance_type": "m3.large",
@@ -49,7 +45,8 @@
       },
       "tags": {
         "Name": "mesos-follower",
-        "Created": "{{ isotime }}"
+        "Created": "{{ isotime }}",
+        "StackType": "{{ user `stack_type` }}"
       },
       "associate_public_ip_address": true
     }

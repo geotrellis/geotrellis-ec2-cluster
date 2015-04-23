@@ -7,3 +7,4 @@ deployment/ansible/roles/*
 !deployment/ansible/roles/geotrellis-spark-cluster.*
 
 *.pem
+/deployment/geotrellis-cluster.config
