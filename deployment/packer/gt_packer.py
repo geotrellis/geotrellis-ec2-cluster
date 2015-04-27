@@ -38,6 +38,14 @@ def get_ubuntu_ami(region):
     return amis[0]['id']
 
 
+def update_ansible_roles():
+    """Function that runs command to update ansible roles to verify they are up-to-date before running packer"""
+    ansible_dir = os.path.join(os.path.dirname(os.path.dirname(os.path.realpath(__file__))), 'ansible')
+    ansible_roles_path = os.path.join(ansible_dir, 'roles')
+    ansible_command = ['ansible-galaxy', 'install', '-f', '-r', 'roles.txt', '-p', ansible_roles_path]
+    subprocess.check_call(ansible_command, cwd=ansible_dir)
+
+
 def run_packer(machine_type, aws_profile, region, stack_type):
     """Function to run packer
 
@@ -56,6 +64,8 @@ def run_packer(machine_type, aws_profile, region, stack_type):
     aws_secret_access_key = boto.config.get(aws_profile, 'aws_secret_access_key')
 
     aws_ubuntu_ami = get_ubuntu_ami(region)
+
+    update_ansible_roles()
 
     # use environment variables when running packer because you cannot specify an
     # AWS profile in ~/.aws/credentials to use with packer

@@ -10,8 +10,6 @@ from troposphere import (
 import template_utils as utils
 import troposphere.autoscaling as asg
 
-from majorkirby import StackNode
-
 
 class MesosFollower(utils.GTStackNode):
     """Stack node for mesos follower machines
@@ -33,7 +31,6 @@ class MesosFollower(utils.GTStackNode):
         'PrivateHostedZoneId': ['VPC:PrivateHostedZoneId'],
         'MesosFollowerAMI': ['global:MesosFollowerAMI'],
         'NumFollowers': ['global:NumFollowers'],
-        'GlobalNotificationsARN': ['global:MesosNotificationARN'],
         'MesosFollowerInstanceProfile': ['global:MesosFollowerInstanceProfile'],
         'MesosFollowerSpotPrice': ['global:MesosFollowerSpotPrice'],
         'MesosSubnet': ['VPC:MesosSubnet'],

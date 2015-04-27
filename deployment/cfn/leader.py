@@ -4,13 +4,10 @@ from troposphere import (
     GetAtt,
     Tags,
     Base64,
-    Select,
     ec2)
 
 import template_utils as utils
 import troposphere.route53 as r53
-
-from majorkirby import StackNode
 
 
 class MesosLeader(utils.GTStackNode):

@@ -61,7 +61,7 @@ class VPC(StackNode):
         ))
 
         region = self.get_input('Region')
-        conn = boto.ec2.connect_to_region(region)
+        conn = boto.ec2.connect_to_region(region, profile_name=self.aws_profile)
         zone = conn.get_all_zones()[0]
 
         self.add_output(Output('AvailabilityZone', Value=zone.name))

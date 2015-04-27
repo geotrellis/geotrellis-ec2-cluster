@@ -5,18 +5,6 @@ import majorkirby as mj
 VPC_CIDR = '10.0.0.0/16'
 ALLOW_ALL_CIDR = '0.0.0.0/0'
 
-EC2_REGIONS = [
-    'ap-northeast-1',
-    'ap-southeast-1',
-    'ap-southeast-2',
-    'eu-central-1',
-    'eu-west-1',
-    'sa-east-1',
-    'us-east-1',
-    'us-west-1',
-    'us-west-2'
-]
-
 EC2_INSTANCE_TYPES = [
     'c4.8xlarge',
     'c3.2xlarge',

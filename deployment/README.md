@@ -70,7 +70,6 @@ MesosFollowerSpotPrice: '<Spot Price to use Mesos Follower Instances> (optional)
 MesosLeaderAMI: '<AMI ID of Mesos Leader (optional -- will be found automatically if not provided)>'
 MesosLeaderInstanceProfile: '<ARN of Mesos Leader Instance Profile (optional -- may not be necessary)>'
 MesosLeaderInstanceType: '<Mesos Leader Instance Type>'
-MesosNotificationARN: ''
 Region: '<AWS Region to Launch Stack>'
 StackType: '<Type of Stack to launch (e.g. accumulo)>'
 ```
@@ -83,27 +82,7 @@ Creating AMIs and launching stacks is managed with  `gt-stack.py` CLI. This comm
 
 ### Generate AMIs
 
-Before launching your GeoTrellis Cluster stack you will need to generate AMIs. The `create-ami` subcommand in `gt-stack.py` can be used for generating AMIs.
-
-```bash
-usage: gt-stack.py create-ami [-h] [--aws-profile AWS_PROFILE]
-                              [--gt-config-path GT_CONFIG_PATH]
-                              [--gt-profile GT_PROFILE]
-                              machine_type
-
-positional arguments:
-  machine_type          Type of AMI to build for GeoTrellis-Spark
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --aws-profile AWS_PROFILE
-                        AWS profile to use for launching stack and other
-                        resources
-  --gt-config-path GT_CONFIG_PATH
-                        Path to GeoTrellis stack config
-  --gt-profile GT_PROFILE
-                        GeoTrellis stack profile to use for launching stacks
-```
+Before launching your GeoTrellis Cluster stack you will need to generate AMIs. The `create-ami` subcommand in `gt-stack.py` can be used for generating AMIs. To view options at the tommand line you can use `./gt-stack.py create-ami --help`.
 
 If using defaults for generating AMIs (e.g. you haven't moved your `geotrellis-cluster.config` file and want to youse the `default` AWS profile in `~/.aws/credentials`) you only need to provide the `machine_type` positional argument. There are two types of machines -- `mesos-leader` and `mesos-follower`. For instance, to generate a new `mesos-leader` AMI:
 
@@ -120,24 +99,7 @@ This two commands will create AMIs based on parameters set in the configured `ge
 
 ### Launch Stack
 
-After having successfully created AMIs, you can now launch a GeoTrellis cluster stack with the `launch-stacks` subcommand in `./gt-stack.py`.
-
-```bash
-$ ./gt-stack.py launch-stacks --help
-usage: gt-stack.py launch-stacks [-h] [--aws-profile AWS_PROFILE]
-                                 [--gt-config-path GT_CONFIG_PATH]
-                                 [--gt-profile GT_PROFILE]
-
-optional arguments:
-  -h, --help            show this help message and exit
-  --aws-profile AWS_PROFILE
-                        AWS profile to use for launching stack and other
-                        resources
-  --gt-config-path GT_CONFIG_PATH
-                        Path to GeoTrellis stack config
-  --gt-profile GT_PROFILE
-                        GeoTrellis stack profile to use for launching stacks
-```
+After having successfully created AMIs, you can now launch a GeoTrellis cluster stack with the `launch-stacks` subcommand in `./gt-stack.py`. To view all options and parameters to the `launch-stacks` command you can use the help option at the command line `./gt-stack.py launch-stacks --help`.
 
 Using the parameters set in your `geotrellis-cluster.config` and provided defaults you can launch a full stack with the command:
 

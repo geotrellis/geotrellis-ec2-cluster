@@ -1,12 +1,12 @@
 azavea.build-essential,0.1.0
 azavea.ntp,0.1.0
 azavea.java,0.2.1
-azavea.zookeeper,0.3.0
+azavea.zookeeper,0.4.0
 azavea.mesos,0.2.1
 azavea.marathon,0.2.1
-azavea.hdfs,0.4.2
+azavea.hdfs,0.5.0
 azavea.libgdal-java,0.1.0
-azavea.spark,0.2.0
+azavea.spark,0.3.0
 azavea.accumulo,0.1.0
 azavea.pptpd,0.2.0
 azavea.graphite,0.4.0
