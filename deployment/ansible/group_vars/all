@@ -4,8 +4,9 @@ accumulo_follower: not accumulo_leader
 developing: "'development' in group_names"
 packing: "'packer' in group_names"
 
+accumulo_mirror: "http://download.nextag.com/apache"
+
 java_version: "7u51-2.4.*"
-spark_version: "1.2.0+cdh5.3.*"
 mesos_version: "0.21.*"
 marathon_version: "0.7.*"
 
@@ -51,3 +52,8 @@ collectd_load_plugins:
   - interface
   - memory
   - write_graphite
+
+# Spark Settings
+spark_env_extras:
+  MESOS_NATIVE_LIBRARY: "/usr/local/lib/libmesos.so"
+  SPARK_WORKER_CORES: "8"

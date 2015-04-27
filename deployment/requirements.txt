@@ -1,2 +1,3 @@
 awscli==1.6.10
 troposphere==0.6.2
+boto==2.38.0

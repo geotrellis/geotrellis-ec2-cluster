@@ -87,8 +87,6 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     leader.vm.hostname = "leader"
     leader.vm.network "private_network", ip: "33.33.33.10"
 
-    leader.vm.synced_folder ".", "/vagrant", disabled: true
-
     # Spark console
     leader.vm.network "forwarded_port", guest: 4040, host: 4040
     # Mesos console
