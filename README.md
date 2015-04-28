@@ -1,16 +1,25 @@
-# vagrant-geotrellis-mesos-spark
+# geotrellis-ec2-cluster
 
-This is a Vagrant project that attempts to produce a local development environment for [GeoTrellis](http://geotrellis.io), on top of [Apache Spark](https://spark.apache.org), on top of [Apache Mesos](http://mesos.apache.org).
+This project attempts to aid in the process of setting up (locally, and on Amazon EC2) a GeoTrellis environment for leveraging its integration with Spark. 
+
+The entire process will install and configure the following dependencies:
+
+- Accumulo
+- HDFS
+- Marathon
+- Mesos
+- Spark
+- Zookeeper
 
 ## Local Development
 
-A combination of Vagrant 1.5+, Ansible 1.6+, and the `vagrant-hostmanager` Vagrant plug-in is used to setup the development environment for this project. It consists of the following virtual machines:
+Vagrant 1.6+, Ansible 1.8+, and the `vagrant-hostmanager` Vagrant plug-in are used to setup the development environment for this project. It consists of the following virtual machines:
 
 - `leader`
 - `follower01`
 - `follower02`
 
-The `leader` virtual machine is overloaded with a Mesos leader, Marathon, Zookeeper, and an HDFS NameNode. The `follower*` virtual machines are Mesos followers, as well as HDFS DataNodes.
+The `leader` virtual machine is overloaded with a Mesos and Accumulo leader, Marathon, Zookeeper, and an HDFS NameNode. The `follower*` virtual machines are Mesos followers, Accumulo tablet servers, as well as HDFS DataNodes.
 
 Use the following command to bring up a local development environment:
 
@@ -36,13 +45,11 @@ Grafana                | 8090  | [http://localhost:8090](http://localhost:8090)
 
 ### Caching
 
-In order to speed up things up, you may want to consider using a local caching proxy. The `VAGRANT_PROXYCONF_ENDPOINT` environmental variable provides a way to supply a caching proxy endpoint for the virtual machines to use:
+In order to speed up things up, you may want to consider using installing the [`vagrant-cachier`](https://github.com/fgrehm/vagrant-cachier) plugin:
 
 ```bash
-$ VAGRANT_PROXYCONF_ENDPOINT="http://192.168.96.10:8123/" vagrant up
+$ vagrant plugin install vagrant-cachier
 ```
-
-Alternatively, you can also install the [`vagrant-cachier`](https://github.com/fgrehm/vagrant-cachier) plugin.
 
 ### Testing
 
@@ -54,28 +61,17 @@ First, login to the Mesos leader:
 $ vagrant ssh leader
 ```
 
-From there, set the following environmental variables:
+From there, launch the `spark-shell` and run the test program:
 
 ```bash
-vagrant@leader:~$ export MESOS_NATIVE_LIBRARY=/usr/local/lib/libmesos.so
-vagrant@leader:~$ export MASTER=mesos://zk://zookeeper.service.geotrellis-spark.internal:2181/mesos
-vagrant@leader:~$ export SPARK_EXECUTOR_URI="http://d3kbcqa49mib13.cloudfront.net/spark-1.2.1-bin-cdh4.tgz"
-```
-
-Next, download and extract the Spark 1.2.1 distribution for CDH4 locally:
-
-```bash
-vagrant@leader:~$ wget $SPARK_EXECUTOR_URI
-vagrant@leader:~$ tar xzf spark-1.2.1-bin-cdh4.tgz
-```
-
-From here we can launch the `spark-shell` and run the test program:
-
-```bash
-vagrant@leader:~$ ./spark-1.2.1-bin-cdh4/bin/spark-shell
+vagrant@leader:~$ spark-shell --master mesos://zk://zookeeper.service.geotrellis-spark.internal:2181/mesos
 scala> val data = 1 to 10000
 scala> val distData = sc.parallelize(data)
 scala> distData.filter(_< 10).collect()
 ```
 
 If all goes well, you should be able to see Spark distributing bits of the filter across the `follower*` virtual machines.
+
+## Deployment
+
+For more details around the Amazon Web Services deployment process, please see the deployment [README](deployment/README.md).

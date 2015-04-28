@@ -44,23 +44,10 @@ if [ "up", "provision", "status" ].include?(ARGV.first)
 end
 
 ANSIBLE_INVENTORY_PATH = "deployment/ansible/inventory/development"
-VAGRANT_PROXYCONF_ENDPOINT = ENV["VAGRANT_PROXYCONF_ENDPOINT"]
 VAGRANTFILE_API_VERSION = "2"
 
 Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
   config.vm.box = "ubuntu/trusty64"
-
-  # Wire up the proxy if:
-  #
-  #   - The vagrant-proxyconf Vagrant plugin is installed
-  #   - The user set the VAGRANT_PROXYCONF_ENDPOINT environmental variable
-  #
-  if Vagrant.has_plugin?("vagrant-proxyconf") &&
-     !VAGRANT_PROXYCONF_ENDPOINT.nil?
-    config.proxy.http     = VAGRANT_PROXYCONF_ENDPOINT
-    config.proxy.https    = VAGRANT_PROXYCONF_ENDPOINT
-    config.proxy.no_proxy = "localhost,127.0.0.1"
-  end
 
   if Vagrant.has_plugin?("vagrant-hostmanager")
     config.hostmanager.enabled = true
@@ -70,8 +57,7 @@ Vagrant.configure(VAGRANTFILE_API_VERSION) do |config|
     exit(1)
   end
 
-  if Vagrant.has_plugin?("vagrant-cachier") &&
-    VAGRANT_PROXYCONF_ENDPOINT.nil?
+  if Vagrant.has_plugin?("vagrant-cachier")
     config.cache.scope = :box
   end
 
