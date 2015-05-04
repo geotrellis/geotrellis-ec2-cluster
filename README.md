@@ -43,6 +43,8 @@ Graphite               | 8081  | [http://localhost:8081](http://localhost:8081)
 ElasticSearch          | 9200  | [http://localhost:9200](http://localhost:9200)
 Grafana                | 8090  | [http://localhost:8090](http://localhost:8090)
 
+**Note**: Statsite (the C port of StatsD) is also running alongside Graphite, but its port number (`8125`) is not forwarded because it is meant for intra-cluster communication.
+
 ### Caching
 
 In order to speed up things up, you may want to consider using installing the [`vagrant-cachier`](https://github.com/fgrehm/vagrant-cachier) plugin:
