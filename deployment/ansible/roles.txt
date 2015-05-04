@@ -13,3 +13,4 @@ azavea.graphite,0.4.0
 azavea.grafana,0.1.0
 azavea.nginx,0.2.0
 azavea.apache2,0.2.2
+azavea.statsite,0.1.1
