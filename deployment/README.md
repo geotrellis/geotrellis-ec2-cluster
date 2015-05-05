@@ -72,6 +72,7 @@ MesosLeaderInstanceProfile: '<ARN of Mesos Leader Instance Profile (optional -- 
 MesosLeaderInstanceType: '<Mesos Leader Instance Type>'
 Region: '<AWS Region to Launch Stack>'
 StackType: '<Type of Stack to launch (e.g. accumulo)>'
+NameSpace: '<String that identifies user of stack (used to differentiate multiple stacks within a single account)>'
 ```
 
 Multiple configs can be present in the same file, but must be delineated by separate sections using different section headers (`[SECTION]`).

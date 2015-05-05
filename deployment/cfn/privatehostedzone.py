@@ -15,8 +15,11 @@ class R53PrivateHostedZone(CustomActionNode):
     """
     INPUTS = {'VpcId': ['global:VpcId', 'VPC:VpcId'],
               'PrivateHostedZoneName': ['global:PrivateHostedZoneName'],
+              'NameSpace': ['global:NameSpace'],
               'Region': ['global:Region'],
               'StackType': ['global:StackType']}
+
+    ATTRIBUTES = {'NameSpace': 'NameSpace'}
 
     def action(self):
         self.region = self.get_input('Region')

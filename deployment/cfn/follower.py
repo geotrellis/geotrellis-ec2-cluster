@@ -22,6 +22,7 @@ class MesosFollower(utils.GTStackNode):
     """
 
     INPUTS = {
+        'NameSpace': ['global:NameSpace'],
         'AvailabilityZone': ['VPC:AvailabilityZone'],
         'Tags': ['global:Tags'],
         'Region': ['global:Region'],
@@ -37,6 +38,8 @@ class MesosFollower(utils.GTStackNode):
         'MesosFollowerInstanceType': ['global:MesosFollowerInstanceType'],
         'VpcId': ['global:VpcId', 'VPC:VpcId']
     }
+
+    ATTRIBUTES = {'NameSpace': 'NameSpace'}
 
     DEFAULTS = {
         'Tags': {},

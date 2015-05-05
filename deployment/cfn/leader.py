@@ -14,6 +14,7 @@ class MesosLeader(utils.GTStackNode):
     """Leader stack"""
 
     INPUTS = {
+        'NameSpace': ['global:NameSpace'],
         'Tags': ['global:Tags'],
         'StackType': ['global:StackType'],
         'KeyName': ['global:KeyName'],
@@ -31,6 +32,8 @@ class MesosLeader(utils.GTStackNode):
         'Tags': {},
         'MesosLeaderAMI': None
     }
+
+    ATTRIBUTES = {'NameSpace': 'NameSpace'}
 
     MACHINE_TYPE = 'mesos-leader'
     AMI_INPUT = 'MesosLeaderAMI'

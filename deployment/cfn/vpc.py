@@ -16,11 +16,14 @@ class VPC(StackNode):
     INPUTS = {'Tags': ['global:Tags'],
               'Region': ['global:Region'],
               'StackType': ['global:StackType'],
+              'NameSpace': ['global:NameSpace'],
               'IPAccess': ['global:IPAccess']}
 
     DEFAULTS = {
         'Tags': {},
     }
+
+    ATTRIBUTES = {'NameSpace': 'NameSpace'}
 
     def set_up_stack(self):
         super(VPC, self).set_up_stack()
