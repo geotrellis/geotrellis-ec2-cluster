@@ -11,3 +11,4 @@ MesosFollowerSpotPrice: '<Spot Price to use Mesos Follower Instances> (optional)
 PrivateHostedZoneName: '<Name of Private Hosted Zone to use for Private DNS in new VPC>'
 Region: '<AWS Region to Launch Stack>'
 StackType: '<Type of Stack to launch (e.g. accumulo)>'
+NameSpace: '<String that identifies user of stack (used to differentiate multiple stacks within a single account)>'
