@@ -35,10 +35,10 @@ else
    unset HADOOP_HOME
 fi
 
-test -z "$HADOOP_CONF_DIR"       && export HADOOP_CONF_DIR="/etc/hadoop/conf"
-test -z "$JAVA_HOME"             && export JAVA_HOME=/usr/lib/jvm/java-7-openjdk-amd64
-test -z "$ZOOKEEPER_HOME"        && export ZOOKEEPER_HOME=/usr/lib/zookeeper
-test -z "$ACCUMULO_LOG_DIR"      && export ACCUMULO_LOG_DIR=$ACCUMULO_HOME/logs
+test -z "$HADOOP_CONF_DIR"       && export HADOOP_CONF_DIR={{ hdfs_conf_dir }}
+test -z "$JAVA_HOME"             && export JAVA_HOME=/usr/lib/jvm/java-{{ java_major_version }}-oracle
+test -z "$ZOOKEEPER_HOME"        && export ZOOKEEPER_HOME={{ zookeeper_data_dir }}
+test -z "$ACCUMULO_LOG_DIR"      && export ACCUMULO_LOG_DIR={{ accumulo_log_dir }}/logs
 if [ -f ${ACCUMULO_CONF_DIR}/accumulo.policy ]
 then
    POLICY="-Djava.security.manager -Djava.security.policy=${ACCUMULO_CONF_DIR}/accumulo.policy"
@@ -56,7 +56,7 @@ export ACCUMULO_KILL_CMD='kill -9 %p'
 ### platform in additional directories. (Use DYLD_LIBRARY_PATH on Mac OS X.)
 ### May not be necessary for Hadoop 2.x or using an RPM that installs to
 ### the correct system library directory.
-# export LD_LIBRARY_PATH=${HADOOP_PREFIX}/lib/native/${PLATFORM}:${LD_LIBRARY_PATH}
+export LD_LIBRARY_PATH=${HADOOP_PREFIX}/lib/native/${PLATFORM}:${LD_LIBRARY_PATH}
 
 # Should the monitor bind to all network interfaces -- default: false
 export ACCUMULO_MONITOR_BIND_ALL="true"

@@ -1,3 +1,0 @@
----
-hdfs_disks:
-  - { device: "/dev/sdb", mount_point: "/media/ephemeral0" }

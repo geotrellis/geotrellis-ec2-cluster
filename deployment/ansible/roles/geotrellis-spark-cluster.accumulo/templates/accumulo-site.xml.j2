@@ -91,20 +91,17 @@
     <name>general.classpaths</name>
 
     <value>
+      <!-- Accumulo requirements -->
       $ACCUMULO_HOME/lib/accumulo-server.jar,
       $ACCUMULO_HOME/lib/accumulo-core.jar,
       $ACCUMULO_HOME/lib/accumulo-start.jar,
       $ACCUMULO_HOME/lib/accumulo-fate.jar,
       $ACCUMULO_HOME/lib/accumulo-proxy.jar,
       $ACCUMULO_HOME/lib/[^.].*.jar,
+      <!-- ZooKeeper requirements -->
       $ZOOKEEPER_HOME/zookeeper[^.].*.jar,
+      <!-- Common Hadoop requirements -->
       $HADOOP_CONF_DIR,
-      $HADOOP_PREFIX/share/hadoop/common/[^.].*.jar,
-      $HADOOP_PREFIX/share/hadoop/common/lib/(?!slf4j)[^.].*.jar,
-      $HADOOP_PREFIX/share/hadoop/hdfs/[^.].*.jar,
-      $HADOOP_PREFIX/share/hadoop/mapreduce/[^.].*.jar,
-      $HADOOP_PREFIX/share/hadoop/yarn/[^.].*.jar,
-      $HADOOP_PREFIX/share/hadoop/yarn/lib/jersey.*.jar,
       /usr/lib/hadoop/[^.].*.jar,
       /usr/lib/hadoop/lib/[^.].*.jar,
       /usr/lib/hadoop-hdfs/[^.].*.jar,

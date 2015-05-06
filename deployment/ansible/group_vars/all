@@ -1,37 +1,20 @@
 ---
 mesos_follower: not mesos_leader
 accumulo_follower: not accumulo_leader
-developing: "'development' in group_names"
-packing: "'packer' in group_names"
 
-accumulo_mirror: "http://download.nextag.com/apache"
-
-java_version: "7u51-2.4.*"
-mesos_version: "0.21.*"
-marathon_version: "0.7.*"
+java_version: "7u80*"
+java_flavor: "oracle"
+java_oracle_accept_license_agreement: True
 
 zookeeper_servers:
   - { index: "0", ip: "zookeeper.service.geotrellis-spark.internal", ports: "2888:3888" }
 
+mesos_version: "0.21.*"
 mesos_leader_cluster: "geotrellis-mesos-cluster"
 mesos_leader_hostname: "mesos-leader.service.geotrellis-spark.internal"
 mesos_leader_quorum: 1
 
-hdfs_namenode_host: "namenode.service.geotrellis-spark.internal"
-hdfs_core_properties:
-  - { name: "fs.defaultFS", value: "hdfs://{{ hdfs_namenode_host }}:{{ hdfs_namenode_port }}" }
-hdfs_namenode_properties:
-  - { name: "dfs.permissions.superusergroup", value: "hadoop" }
-  - { name: "dfs.namenode.name.dir", value: "/media/persistent0" }
-hdfs_datanode_properties:
-  - { name: "dfs.permissions.superusergroup", value: "hadoop" }
-  - { name: "dfs.datanode.data.dir", value: "{{ hdfs_disks | map(attribute='mount_point') | join(',') }}" }
-  - { name: "dfs.datanode.data.dir.perm", value: "770" }
-  - { name: "dfs.datanode.synconclose", value: "true" }
-
-accumulo_leader_host: "accumulo-leader.service.geotrellis-spark.internal"
-accumulo_instance_name: "geotrellis-accumulo-cluster"
-accumulo_secret: "secret"
+marathon_version: "0.7.*"
 
 graphite_port: 2003
 graphite_host: "monitoring.service.geotrellis-spark.internal"

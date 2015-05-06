@@ -26,9 +26,12 @@
     - accumulo-env.sh
     - accumulo-metrics.xml
     - accumulo-site.xml
+    - auditLog.xml
+    - generic_logger.properties
     - generic_logger.xml
     - log4j.properties
     - monitor_logger.xml
+    - monitor_logger.properties
 
 - name: Set master for Accumulo followers
   copy: content="{{ accumulo_leader_host }}"
