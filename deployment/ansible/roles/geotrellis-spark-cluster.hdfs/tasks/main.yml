@@ -4,11 +4,11 @@
         append=yes
         group=hadoop
         state=present
-  when: developing
+  when: "['development'] | is_in(group_names)"
 
 - name: Add Ubuntu user to HDFS supergroup
   user: name=ubuntu
         append=yes
         group=hadoop
         state=present
-  when: packing
+  when: "['packer'] | is_in(group_names)"

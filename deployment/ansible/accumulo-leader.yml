@@ -8,7 +8,7 @@
 
   roles:
     - { role: "geotrellis-spark-cluster.common" }
-    - { role: "azavea.pptpd", when: packing }
+    - { role: "azavea.pptpd", when: "['packer'] | is_in(group_names)" }
     - { role: "geotrellis-spark-cluster.graphite" } 
     - { role: "geotrellis-spark-cluster.grafana" }
     - { role: "azavea.statsite" }
