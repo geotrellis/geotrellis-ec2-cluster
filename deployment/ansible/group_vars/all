@@ -4,16 +4,19 @@ accumulo_follower: not accumulo_leader
 developing: "'development' in group_names"
 packing: "'packer' in group_names"
 
-java_version: "7u51-2.4.*"
-mesos_version: "0.21.*"
-marathon_version: "0.7.*"
+java_version: "7u80*"
+java_flavor: "oracle"
+java_oracle_accept_license_agreement: True
 
 zookeeper_servers:
   - { index: "0", ip: "zookeeper.service.geotrellis-spark.internal", ports: "2888:3888" }
 
+mesos_version: "0.21.*"
 mesos_leader_cluster: "geotrellis-mesos-cluster"
 mesos_leader_hostname: "mesos-leader.service.geotrellis-spark.internal"
 mesos_leader_quorum: 1
+
+marathon_version: "0.7.*"
 
 graphite_port: 2003
 graphite_host: "monitoring.service.geotrellis-spark.internal"
