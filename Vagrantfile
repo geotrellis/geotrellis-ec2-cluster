@@ -32,7 +32,7 @@ when "accumulo"
   ]
 
   FOLLOWER_HOSTMANAGER_ALIASES = [
-    "datanode0{{index}}service.geotrellis-spark.internal"
+    "datanode0{{index}}.service.geotrellis-spark.internal"
   ]
   FOLLOWER_PORT_FORWARDS = []
 when "cassandra"
