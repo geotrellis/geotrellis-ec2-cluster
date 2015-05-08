@@ -2,14 +2,23 @@
 
 This project attempts to aid in the process of setting up (locally, and on Amazon EC2) a GeoTrellis environment for leveraging its integration with Spark. 
 
-The entire process will install and configure the following dependencies:
+The entire process will install and configure the following dependencies based on the backend specified:
 
-- Accumulo
-- HDFS
+**Base**
+
+- Zookeeper
 - Marathon
 - Mesos
 - Spark
-- Zookeeper
+
+**Accumulo**
+
+- HDFS
+- Accumulo
+
+**Cassandra**
+
+- Cassandra
 
 ## Local Development
 
@@ -19,17 +28,25 @@ Vagrant 1.6+, Ansible 1.8+, and the `vagrant-hostmanager` Vagrant plug-in are us
 - `follower01`
 - `follower02`
 
-The `leader` virtual machine is overloaded with a Mesos and Accumulo leader, Marathon, Zookeeper, and an HDFS NameNode. The `follower*` virtual machines are Mesos followers, Accumulo tablet servers, as well as HDFS DataNodes.
+The `leader` virtual machine includes Zookeeper, Marathon, Mesos and Spark. The `follower*` virtual machines include Mesos and Spark.
 
-Use the following command to bring up a local development environment:
+The `GEOTRELLIS_EC2_CLUSTER_TYPE` environment variable determines what persistence mechanism will be used. Right now, the options are `accumulo` and `cassandra`. If none is specified, `accumulo` is the default:
 
 ```bash
+$ export GEOTRELLIS_EC2_CLUSTER_TYPE="accumulo"
+$ vagrant up
+```
+
+Or:
+
+```bash
+$ export GEOTRELLIS_EC2_CLUSTER_TYPE="cassandra"
 $ vagrant up
 ```
 
 **Note**: This step may prompt you for a password so that the `vagrant-hostmanager` plugin can add records to the virtual machine host's `/etc/hosts` file.
 
-After provisioning is complete, you can view the Mesos web console by navigating to:
+After provisioning is complete, you can view the following web consoles:
 
 ### Service UIs
 
