@@ -1,0 +1,22 @@
+---
+accumulo_mirror: "http://download.nextag.com/apache"
+accumulo_leader_host: "accumulo-leader.service.geotrellis-spark.internal"
+accumulo_instance_name: "geotrellis-accumulo-cluster"
+accumulo_secret: "secret"
+
+hdfs_namenode_host: "namenode.service.geotrellis-spark.internal"
+hdfs_core_properties:
+  - { name: "fs.defaultFS", value: "hdfs://{{ hdfs_namenode_host }}:{{ hdfs_namenode_port }}" }
+hdfs_namenode_properties:
+  - { name: "dfs.permissions.superusergroup", value: "hadoop" }
+  - { name: "dfs.namenode.name.dir", value: "/media/persistent0" }
+  - { name: "dfs.datanode.synconclose", value: "true" }
+hdfs_datanode_properties:
+  - { name: "dfs.permissions.superusergroup", value: "hadoop" }
+  - { name: "dfs.datanode.data.dir", value: "{{ hdfs_disks | map(attribute='mount_point') | join(',') }}" }
+  - { name: "dfs.datanode.data.dir.perm", value: "770" }
+  - { name: "dfs.datanode.synconclose", value: "true" }
+hdfs_disks:
+  - { device: "/dev/sdb", mount_point: "/media/ephemeral0" }
+
+leader_hostnames: "{{ zookeeper_servers[0].ip }} {{ mesos_leader_hostname }} {{ hdfs_namenode_host }} {{ accumulo_leader_host }}"

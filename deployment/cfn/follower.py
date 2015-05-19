@@ -124,7 +124,7 @@ class MesosFollower(utils.GTStackNode):
             InstanceType=Ref(mesos_follower_instance_type_param),
             KeyName=Ref(keyname_param),
             SecurityGroups=[Ref(mesos_follower_security_group)],
-            UserData=Base64(utils.read_file('cloud-config/follower.yml'))
+            UserData=Base64(utils.read_file('cloud-config/%s-follower.yml' % self.get_input('StackType')))
         )
 
         mesos_follower_spot_price = self.get_input('MesosFollowerSpotPrice')
