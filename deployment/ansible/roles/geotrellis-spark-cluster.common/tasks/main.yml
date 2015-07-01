@@ -4,7 +4,7 @@
               regexp="^127.0.1.1"
               line=""
               state=absent
-  when: developing
+  when: "['development'] | is_in(group_names)"
 
 - name: Increase ulimits
   lineinfile: dest="/etc/security/limits.conf"

@@ -143,7 +143,7 @@ class MesosLeader(utils.GTStackNode):
                     DeleteOnTermination=True,
                 )
             ],
-            UserData=Base64(utils.read_file('cloud-config/leader.yml')),
+            UserData=Base64(utils.read_file('cloud-config/%s-leader.yml' % self.get_input('StackType'))),
             Tags=Tags(Name='MesosLeader')
         ))
 

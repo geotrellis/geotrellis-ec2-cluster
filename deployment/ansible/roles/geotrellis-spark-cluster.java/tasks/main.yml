@@ -1,0 +1,4 @@
+---
+- name: Set JAVA_HOME to Oracle JDK
+  apt: pkg=oracle-java{{ java_major_version }}-set-default={{ java_version }}
+       state=present
