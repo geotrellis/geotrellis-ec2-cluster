@@ -18,7 +18,7 @@ $ cd deployment
 $ pip install -r requirements.txt
 ```
 
- - Install [Packer]()
+ - Install [Packer](https://www.packer.io/intro/getting-started/setup.html)
 
 ## Create IAM Roles (optional)
 
